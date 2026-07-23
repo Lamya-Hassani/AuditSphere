@@ -1,0 +1,119 @@
+{
+    "scan_date": "2026-07-23 22:30:14",
+    "target": "192.168.56.0/24",
+    "engine_version": "1.0",
+    "laboratory_security_score": 70,
+    "statistics": {
+        "devices": 2,
+        "critical": 0,
+        "high": 1,
+        "medium": 2,
+        "low": 1
+    },
+    "recommendations": [
+        "Disable Telnet and replace it with SSH.",
+        "Redirect users to HTTPS.",
+        "Replace FTP with SFTP or FTPS.",
+        "Use SSH keys and disable password authentication."
+    ],
+    "devices": [
+        {
+            "device": {
+                "ip": "192.168.56.20",
+                "hostname": null,
+                "mac": "08:00:27:90:51:CA",
+                "vendor": "Oracle VirtualBox virtual NIC",
+                "status": "up",
+                "os": "Linux 4.15 - 5.19",
+                "ports": [
+                    {
+                        "number": 21,
+                        "protocol": "tcp",
+                        "state": "open",
+                        "service": "ftp",
+                        "product": "vsftpd",
+                        "version": "3.0.5"
+                    },
+                    {
+                        "number": 22,
+                        "protocol": "tcp",
+                        "state": "open",
+                        "service": "ssh",
+                        "product": "OpenSSH",
+                        "version": "10.2p1 Ubuntu 2ubuntu3.5"
+                    },
+                    {
+                        "number": 23,
+                        "protocol": "tcp",
+                        "state": "open",
+                        "service": "telnet",
+                        "product": null,
+                        "version": null
+                    },
+                    {
+                        "number": 80,
+                        "protocol": "tcp",
+                        "state": "open",
+                        "service": "http",
+                        "product": "Apache httpd",
+                        "version": "2.4.66"
+                    }
+                ]
+            },
+            "scan_date": "2026-07-23 22:30:14",
+            "risk_score": 12,
+            "risk_level": "High",
+            "security_score": 40,
+            "findings": [
+                {
+                    "service": "ftp",
+                    "port": 21,
+                    "severity": "Medium",
+                    "description": "FTP transmits credentials in plaintext.",
+                    "recommendation": "Replace FTP with SFTP or FTPS.",
+                    "points": 3
+                },
+                {
+                    "service": "ssh",
+                    "port": 22,
+                    "severity": "Low",
+                    "description": "SSH provides encrypted remote administration.",
+                    "recommendation": "Use SSH keys and disable password authentication.",
+                    "points": 1
+                },
+                {
+                    "service": "telnet",
+                    "port": 23,
+                    "severity": "High",
+                    "description": "Telnet transmits all traffic in plaintext.",
+                    "recommendation": "Disable Telnet and replace it with SSH.",
+                    "points": 5
+                },
+                {
+                    "service": "http",
+                    "port": 80,
+                    "severity": "Medium",
+                    "description": "HTTP traffic is not encrypted.",
+                    "recommendation": "Redirect users to HTTPS.",
+                    "points": 3
+                }
+            ]
+        },
+        {
+            "device": {
+                "ip": "192.168.56.10",
+                "hostname": null,
+                "mac": null,
+                "vendor": null,
+                "status": "up",
+                "os": null,
+                "ports": []
+            },
+            "scan_date": "2026-07-23 22:30:14",
+            "risk_score": 0,
+            "risk_level": "Low",
+            "security_score": 100,
+            "findings": []
+        }
+    ]
+}
