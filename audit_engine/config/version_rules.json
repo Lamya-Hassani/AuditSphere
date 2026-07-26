@@ -1,0 +1,41 @@
+{
+    "apache httpd": {
+        "minimum_version": "2.4.60",
+        "severity": "High",
+        "points": 4,
+        "description": "Apache version is outdated and may contain known vulnerabilities.",
+        "recommendation": "Upgrade Apache to the latest stable release."
+    },
+
+    "openssh": {
+        "minimum_version": "9.8",
+        "severity": "Medium",
+        "points": 2,
+        "description": "OpenSSH version is outdated.",
+        "recommendation": "Upgrade OpenSSH."
+    },
+
+    "vsftpd": {
+        "minimum_version": "3.0.5",
+        "severity": "Low",
+        "points": 1,
+        "description": "Verify that the latest security patches are installed.",
+        "recommendation": "Keep VSFTPD updated."
+    },
+
+    "mysql": {
+        "minimum_version": "8.0",
+        "severity": "High",
+        "points": 4,
+        "description": "MySQL version is outdated.",
+        "recommendation": "Upgrade MySQL."
+    },
+
+    "postgresql": {
+        "minimum_version": "16.0",
+        "severity": "Medium",
+        "points": 3,
+        "description": "PostgreSQL version is outdated.",
+        "recommendation": "Upgrade PostgreSQL."
+    }
+}

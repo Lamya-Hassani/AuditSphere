@@ -1,0 +1,28 @@
+{
+    "Legacy Protocols": [
+        "ftp",
+        "telnet"
+    ],
+
+    "Remote Access": [
+        "ssh",
+        "ms-wbt-server"
+    ],
+
+    "Web Services": [
+        "http",
+        "https"
+    ],
+
+    "File Sharing": [
+        "microsoft-ds"
+    ],
+
+    "Mail Services": [
+        "smtp"
+    ],
+
+    "Infrastructure": [
+        "domain"
+    ]
+}

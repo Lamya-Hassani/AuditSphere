@@ -1,62 +1,65 @@
 from dataclasses import asdict
-import json
 from pathlib import Path
+import json
+from datetime import datetime
 
-REPORT_FOLDER = Path("reports")
+TEMP_FOLDER = Path("temp")
+REPORT_FILE = TEMP_FOLDER / "report.json"
+
+
+def convert(obj):
+
+    if isinstance(obj, datetime):
+        return obj.strftime("%Y-%m-%d %H:%M:%S")
+
+    raise TypeError()
+
 
 def export_json(report):
 
-    REPORT_FOLDER.mkdir(exist_ok=True)
+    TEMP_FOLDER.mkdir(exist_ok=True)
 
-    filename = REPORT_FOLDER / (
-        f"laboratory_{report.scan_date.strftime('%Y%m%d_%H%M%S')}.json"
-    )
+    # -------------------------
+    # Serialize devices
+    # -------------------------
+
+    devices = []
+
+    for result in report.results:
+
+        devices.append(asdict(result))
+
+    # -------------------------
+    # Final JSON
+    # -------------------------
 
     output = {
 
-        "scan_date":
-        report.scan_date.strftime("%Y-%m-%d %H:%M:%S"),
+        "audit_metadata": report.metadata,
 
-        "target":
-        report.target,
+        "scan_date": report.scan_date.strftime("%Y-%m-%d %H:%M:%S"),
 
-        "engine_version":
-        report.engine_version,
+        "target": report.target,
 
-        "laboratory_security_score":
-        report.laboratory_security_score,
+        "engine_version": report.engine_version,
 
-        "statistics":
-        report.statistics,
+        "laboratory_security_score": report.laboratory_security_score,
 
-        "recommendations":
-        report.recommendations,
+        "statistics": report.statistics,
 
-        "devices": [
+        "recommendations": report.recommendations,
 
-            {
-                "device": asdict(result.device),
+        "devices": devices
 
-                 "scan_date": result.scan_date.strftime("%Y-%m-%d %H:%M:%S"),
-
-                "risk_score": result.risk_score,
-
-                "risk_level": result.risk_level,
-
-                "security_score": result.security_score,
-
-                "findings": [
-                    asdict(finding)
-                    for finding in result.findings
-                ]
-            }
-
-            for result in report.results
-        ]
     }
 
-    with open(filename, "w") as f:
+    with open(REPORT_FILE, "w") as file:
 
-        json.dump(output, f, indent=4)
+        json.dump(
+            output,
+            file,
+            indent=4,
+            default=convert
+        )
 
-    return filename
+    return REPORT_FILE

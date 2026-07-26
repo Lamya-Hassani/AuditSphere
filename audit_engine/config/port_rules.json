@@ -1,0 +1,29 @@
+{
+    "21": {
+        "severity": "Medium",
+        "points": 2,
+        "description": "FTP port exposed.",
+        "recommendation": "Restrict FTP access."
+    },
+
+    "23": {
+        "severity": "High",
+        "points": 4,
+        "description": "Telnet port exposed.",
+        "recommendation": "Disable Telnet."
+    },
+
+    "445": {
+        "severity": "High",
+        "points": 5,
+        "description": "SMB port exposed.",
+        "recommendation": "Restrict SMB access."
+    },
+
+    "3389": {
+        "severity": "Medium",
+        "points": 4,
+        "description": "RDP exposed.",
+        "recommendation": "Restrict RDP with VPN and MFA."
+    }
+}

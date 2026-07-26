@@ -1,0 +1,23 @@
+2026-07-24 23:41:28 | INFO | Audit Engine Started
+2026-07-24 23:41:28 | INFO | Target: 192.168.56.0/24
+2026-07-24 23:41:33 | INFO | 2 active hosts discovered
+2026-07-24 23:41:33 | INFO | Scanning 192.168.56.20
+2026-07-24 23:42:40 | WARNING | 192.168.56.20 -> FTP Medium
+2026-07-24 23:42:40 | WARNING | 192.168.56.20 -> SSH Low
+2026-07-24 23:42:40 | WARNING | 192.168.56.20 -> TELNET High
+2026-07-24 23:42:40 | WARNING | 192.168.56.20 -> HTTP Medium
+2026-07-24 23:42:40 | INFO | 192.168.56.20 -> Risk=High Score=40
+2026-07-24 23:42:40 | INFO | Scanning 192.168.56.10
+2026-07-24 23:46:04 | INFO | 192.168.56.10 -> Risk=Low Score=100
+2026-07-24 23:46:04 | INFO | Report exported to reports/laboratory_20260724_234133.json
+2026-07-24 23:46:04 | INFO | Inventory updated
+2026-07-24 23:46:04 | INFO | Audit completed
+2026-07-26 14:55:57 | INFO | Audit Engine Started
+2026-07-26 14:55:57 | INFO | Target: 192.168.56.0/24
+2026-07-26 14:56:20 | INFO | 1 active hosts discovered
+2026-07-26 14:56:20 | INFO | Scanning 192.168.56.10
+2026-07-26 14:56:39 | WARNING | 192.168.56.10 -> HTTP Medium
+2026-07-26 14:56:39 | INFO | 192.168.56.10 -> Risk=Low Score=85
+2026-07-26 14:56:39 | INFO | Report exported to reports/laboratory_20260726_145620.json
+2026-07-26 14:56:39 | INFO | Inventory updated
+2026-07-26 14:56:39 | INFO | Audit completed

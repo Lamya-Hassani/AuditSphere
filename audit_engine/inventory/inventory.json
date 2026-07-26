@@ -1,0 +1,30 @@
+{
+    "devices": [
+        {
+            "ip": "192.168.56.20",
+            "hostname": "192.168.56.20",
+            "mac": "08:00:27:90:51:CA",
+            "vendor": "Oracle VirtualBox virtual NIC",
+            "os": "Linux 4.15 - 5.19",
+            "first_seen": "2026-07-24 23:46:04",
+            "last_seen": "2026-07-26 17:28:21",
+            "times_scanned": 5,
+            "risk_level": "High",
+            "security_score": 40,
+            "status": "Online"
+        },
+        {
+            "ip": "192.168.56.10",
+            "hostname": "192.168.56.10",
+            "mac": null,
+            "vendor": null,
+            "os": "Linux 5.0 - 6.2",
+            "first_seen": "2026-07-24 23:46:04",
+            "last_seen": "2026-07-26 17:28:21",
+            "times_scanned": 6,
+            "risk_level": "Low",
+            "security_score": 85,
+            "status": "Online"
+        }
+    ]
+}

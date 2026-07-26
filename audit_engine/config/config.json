@@ -1,0 +1,23 @@
+{
+    "engine": {
+        "version": "1.1.0",
+        "keep_reports": true,
+        "keep_logs": true,
+        "keep_inventory": true,
+        "keep_temp_files": false,
+        "scan_directory": "temp_scans",
+        "report_directory": "reports",
+        "log_directory": "logs",
+        "inventory_directory": "inventory"
+    },
+
+    "scanner": {
+        "discovery_arguments": [
+            "-sn"
+        ],
+
+        "detailed_arguments": [
+            "-A"
+        ]
+    }
+}
