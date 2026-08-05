@@ -4,19 +4,19 @@
         "engine_version": "1.0.0",
         "rules_version": "2026.1",
         "scan_type": "Laboratory Network Audit",
-        "generated_at": "2026-07-26 17:28:21",
-        "scan_duration": "86.27 seconds",
+        "generated_at": "2026-07-28 14:24:08",
+        "scan_duration": "222.42 seconds",
         "scanner": "Nmap 7.99",
         "parser": "Internal XML Parser",
         "python_version": "3.13.12",
         "platform": "Linux",
         "hostname": "kali-linux",
-        "target": "192.168.56.0/24",
+        "target": "192.168.1.0/24",
         "status": "Completed",
         "total_devices": 2,
         "open_ports": 5,
         "total_findings": 5,
-        "highest_risk_host": "192.168.56.20",
+        "highest_risk_host": "192.168.1.20",
         "risk_distribution": {
             "Critical": 0,
             "High": 1,
@@ -24,8 +24,8 @@
             "Low": 1
         }
     },
-    "scan_date": "2026-07-26 17:26:57",
-    "target": "192.168.56.0/24",
+    "scan_date": "2026-07-28 14:20:28",
+    "target": "192.168.1.0/24",
     "engine_version": "1.0.0",
     "laboratory_security_score": 62,
     "statistics": {
@@ -44,8 +44,8 @@
     "devices": [
         {
             "device": {
-                "ip": "192.168.56.20",
-                "hostname": "192.168.56.20",
+                "ip": "192.168.1.20",
+                "hostname": "192.168.1.20",
                 "mac": "08:00:27:90:51:CA",
                 "vendor": "Oracle VirtualBox virtual NIC",
                 "status": "up",
@@ -85,7 +85,7 @@
                     }
                 ]
             },
-            "scan_date": "2026-07-26 17:28:02",
+            "scan_date": "2026-07-28 14:21:34",
             "findings": [
                 {
                     "service": "ftp",
@@ -133,8 +133,8 @@
             "risk_level": "High",
             "risk_categories": [
                 "Remote Access",
-                "Legacy Protocols",
-                "Web Services"
+                "Web Services",
+                "Legacy Protocols"
             ],
             "score_breakdown": {
                 "Legacy Protocols": 8,
@@ -144,30 +144,30 @@
         },
         {
             "device": {
-                "ip": "192.168.56.10",
-                "hostname": "192.168.56.10",
+                "ip": "192.168.1.10",
+                "hostname": "192.168.1.10",
                 "mac": null,
                 "vendor": null,
                 "status": "up",
                 "os": "Linux 5.0 - 6.2",
                 "ports": [
                     {
-                        "number": 8888,
+                        "number": 8000,
                         "protocol": "tcp",
                         "state": "open",
                         "service": "http",
-                        "product": "Tornado httpd",
-                        "version": "6.5.5"
+                        "product": "Uvicorn",
+                        "version": null
                     }
                 ]
             },
-            "scan_date": "2026-07-26 17:28:21",
+            "scan_date": "2026-07-28 14:24:08",
             "findings": [
                 {
                     "service": "http",
-                    "port": 8888,
-                    "product": "Tornado httpd",
-                    "version": "6.5.5",
+                    "port": 8000,
+                    "product": "Uvicorn",
+                    "version": null,
                     "severity": "Medium",
                     "description": "HTTP traffic is not encrypted.",
                     "recommendation": "Redirect users to HTTPS.",

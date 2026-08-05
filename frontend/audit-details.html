@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Report Details - Cybersecurity Audit Platform</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <!-- Custom Cyber Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Mount Point for Top Navigation -->
+  <div id="navbar-mount"></div>
+
+  <!-- Main Container -->
+  <main class="container-fluid px-lg-4 py-4">
+
+    <!-- Back Button & Header Actions -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <a href="audits.html" class="btn btn-cyber-outline btn-sm d-inline-flex align-items-center gap-2">
+        <i class="bi bi-arrow-left"></i> Back to Audit History
+      </a>
+      <div class="d-flex gap-2">
+        <button id="rescan-current-btn" class="btn btn-cyber-primary btn-sm d-flex align-items-center gap-1">
+          <i class="bi bi-arrow-repeat"></i> Re-run Audit
+        </button>
+        <button id="delete-current-btn" class="btn btn-cyber-danger btn-sm d-flex align-items-center gap-1">
+          <i class="bi bi-trash"></i> Delete Report
+        </button>
+      </div>
+    </div>
+
+    <!-- Audit Header Hero Banner -->
+    <div class="cyber-card p-4 mb-4" id="report-hero">
+      <div class="text-center py-4 text-muted">Loading audit metadata...</div>
+    </div>
+
+    <!-- Statistics & Recommendations Grid -->
+    <div class="row g-4 mb-4">
+      <!-- Vulnerability Severity Count Cards -->
+      <div class="col-lg-6">
+        <div class="cyber-card p-4 h-100">
+          <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-bar-chart-fill text-info"></i>
+            <span>Vulnerability Metrics</span>
+          </h5>
+          <div class="row g-3" id="stats-grid">
+            <div class="col-6 col-md-3 text-center p-3 rounded-3" style="background:rgba(244,63,94,0.1); border:1px solid rgba(244,63,94,0.2);">
+              <div class="text-rose text-uppercase fw-semibold small">Critical</div>
+              <h2 id="stat-critical" class="fw-bold mb-0 text-danger">0</h2>
+            </div>
+            <div class="col-6 col-md-3 text-center p-3 rounded-3" style="background:rgba(249,115,22,0.1); border:1px solid rgba(249,115,22,0.2);">
+              <div class="text-uppercase fw-semibold small" style="color:var(--color-high);">High</div>
+              <h2 id="stat-high" class="fw-bold mb-0" style="color:var(--color-high);">0</h2>
+            </div>
+            <div class="col-6 col-md-3 text-center p-3 rounded-3" style="background:rgba(234,179,8,0.1); border:1px solid rgba(234,179,8,0.2);">
+              <div class="text-uppercase fw-semibold small" style="color:var(--color-medium);">Medium</div>
+              <h2 id="stat-medium" class="fw-bold mb-0" style="color:var(--color-medium);">0</h2>
+            </div>
+            <div class="col-6 col-md-3 text-center p-3 rounded-3" style="background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.2);">
+              <div class="text-uppercase fw-semibold small" style="color:var(--color-low);">Low</div>
+              <h2 id="stat-low" class="fw-bold mb-0" style="color:var(--color-low);">0</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Executive Recommendations -->
+      <div class="col-lg-6">
+        <div class="cyber-card p-4 h-100">
+          <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-lightbulb-fill text-warning"></i>
+            <span>Executive Remediation Guidance</span>
+          </h5>
+          <ul class="list-group list-group-flush bg-transparent" id="recommendations-list">
+            <li class="list-group-item bg-transparent text-muted border-secondary py-2">No specific recommendations recorded.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scanned Devices & Findings Breakdown -->
+    <div class="cyber-card p-4">
+      <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+        <i class="bi bi-hdd-network-fill text-info"></i>
+        <span>Scanned Devices & Vulnerability Breakdown</span>
+      </h5>
+      <div id="devices-container">
+        <div class="text-center py-4 text-muted">Loading scanned hosts...</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Page Scripts -->
+  <script type="module" src="js/audit-details.js"></script>
+</body>
+</html>

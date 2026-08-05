@@ -11,7 +11,7 @@
             "times_scanned": 5,
             "risk_level": "High",
             "security_score": 40,
-            "status": "Online"
+            "status": "Offline"
         },
         {
             "ip": "192.168.56.10",
@@ -20,11 +20,76 @@
             "vendor": null,
             "os": "Linux 5.0 - 6.2",
             "first_seen": "2026-07-24 23:46:04",
-            "last_seen": "2026-07-26 17:28:21",
-            "times_scanned": 6,
+            "last_seen": "2026-07-28 13:37:21",
+            "times_scanned": 8,
             "risk_level": "Low",
             "security_score": 85,
+            "status": "Offline"
+        },
+        {
+            "ip": "192.168.1.20",
+            "hostname": "192.168.1.20",
+            "mac": "08:00:27:90:51:CA",
+            "vendor": "Oracle VirtualBox virtual NIC",
+            "os": "Linux 4.15 - 5.19",
+            "first_seen": "2026-07-28 14:24:08",
+            "last_seen": "2026-07-28 23:50:58",
+            "times_scanned": 6,
+            "risk_level": "High",
+            "security_score": 40,
             "status": "Online"
+        },
+        {
+            "ip": "192.168.1.10",
+            "hostname": "192.168.1.10",
+            "mac": null,
+            "vendor": null,
+            "os": "Linux 5.0 - 6.2",
+            "first_seen": "2026-07-28 14:24:08",
+            "last_seen": "2026-07-28 22:59:46",
+            "times_scanned": 3,
+            "risk_level": "Low",
+            "security_score": 85,
+            "status": "Offline"
+        },
+        {
+            "ip": "192.168.56.1",
+            "hostname": "192.168.56.1",
+            "mac": "0A:00:27:00:00:05",
+            "vendor": null,
+            "os": "Microsoft Windows 11 24H2",
+            "first_seen": "2026-07-28 14:49:49",
+            "last_seen": "2026-07-28 14:49:49",
+            "times_scanned": 1,
+            "risk_level": "Medium",
+            "security_score": 80,
+            "status": "Offline"
+        },
+        {
+            "ip": "192.168.56.100",
+            "hostname": "192.168.56.100",
+            "mac": "08:00:27:3C:9B:72",
+            "vendor": "Oracle VirtualBox virtual NIC",
+            "os": "2N Helios IP VoIP doorbell",
+            "first_seen": "2026-07-28 14:49:49",
+            "last_seen": "2026-07-28 14:49:49",
+            "times_scanned": 1,
+            "risk_level": "Low",
+            "security_score": 100,
+            "status": "Offline"
+        },
+        {
+            "ip": "192.168.56.101",
+            "hostname": "192.168.56.101",
+            "mac": null,
+            "vendor": null,
+            "os": null,
+            "first_seen": "2026-07-28 14:49:49",
+            "last_seen": "2026-07-28 14:49:49",
+            "times_scanned": 1,
+            "risk_level": "Low",
+            "security_score": 100,
+            "status": "Offline"
         }
     ]
 }

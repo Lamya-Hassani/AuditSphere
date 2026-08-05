@@ -80,3 +80,101 @@
 2026-07-26 17:28:21 | INFO | Report exported to temp/report.json
 2026-07-26 17:28:21 | INFO | Inventory updated
 2026-07-26 17:28:21 | INFO | Audit completed
+2026-07-28 13:17:58 | INFO | Audit Engine Started
+2026-07-28 13:17:58 | INFO | Target: 192.168.56.0/24
+2026-07-28 13:18:10 | INFO | 1 active hosts discovered
+2026-07-28 13:18:10 | INFO | Scanning 192.168.56.10
+2026-07-28 13:21:35 | INFO | 192.168.56.10 -> Risk=Low Score=100
+2026-07-28 13:21:35 | INFO | Report exported to temp/report.json
+2026-07-28 13:21:35 | INFO | Inventory updated
+2026-07-28 13:21:35 | INFO | Audit completed
+2026-07-28 13:27:36 | INFO | Audit Engine Started
+2026-07-28 13:27:36 | INFO | Target: 192.168.56.0/24
+2026-07-28 13:33:56 | INFO | 1 active hosts discovered
+2026-07-28 13:33:56 | INFO | Scanning 192.168.56.10
+2026-07-28 13:37:20 | INFO | 192.168.56.10 -> Risk=Low Score=85
+2026-07-28 13:37:21 | INFO | Report exported to temp/report.json
+2026-07-28 13:37:21 | INFO | Inventory updated
+2026-07-28 13:37:21 | INFO | Audit completed
+2026-07-28 13:57:43 | INFO | Audit Engine Started
+2026-07-28 13:57:43 | INFO | Target: 192.168.56.0/24
+2026-07-28 13:57:52 | INFO | 4 active hosts discovered
+2026-07-28 13:57:52 | INFO | Scanning 192.168.56.1
+2026-07-28 14:12:48 | INFO | 192.168.56.1 -> Risk=Medium Score=80
+2026-07-28 14:12:48 | INFO | Scanning 192.168.56.100
+2026-07-28 14:12:51 | INFO | 192.168.56.100 -> Risk=Low Score=100
+2026-07-28 14:12:51 | INFO | Scanning 192.168.56.10
+2026-07-28 14:14:52 | INFO | 192.168.56.10 -> Risk=Low Score=85
+2026-07-28 14:14:52 | INFO | Scanning 192.168.56.101
+2026-07-28 14:20:26 | INFO | Audit Engine Started
+2026-07-28 14:20:26 | INFO | Target: 192.168.1.0/24
+2026-07-28 14:20:28 | INFO | 2 active hosts discovered
+2026-07-28 14:20:28 | INFO | Scanning 192.168.1.20
+2026-07-28 14:21:34 | INFO | 192.168.1.20 -> Risk=High Score=40
+2026-07-28 14:21:34 | INFO | Scanning 192.168.1.10
+2026-07-28 14:24:08 | INFO | 192.168.1.10 -> Risk=Low Score=85
+2026-07-28 14:24:08 | INFO | Report exported to temp/report.json
+2026-07-28 14:24:08 | INFO | Inventory updated
+2026-07-28 14:24:08 | INFO | Audit completed
+2026-07-28 14:29:57 | INFO | Audit Engine Started
+2026-07-28 14:29:57 | INFO | Target: 192.168.56.0/24
+2026-07-28 14:29:59 | INFO | 3 active hosts discovered
+2026-07-28 14:29:59 | INFO | Scanning 192.168.56.1
+2026-07-28 14:31:24 | INFO | Audit Engine Started
+2026-07-28 14:31:24 | INFO | Target: 192.168.56.0/24
+2026-07-28 14:31:26 | INFO | 3 active hosts discovered
+2026-07-28 14:31:26 | INFO | Scanning 192.168.56.1
+2026-07-28 14:46:22 | INFO | 192.168.56.1 -> Risk=Medium Score=80
+2026-07-28 14:46:22 | INFO | Scanning 192.168.56.100
+2026-07-28 14:46:25 | INFO | 192.168.56.100 -> Risk=Low Score=100
+2026-07-28 14:46:25 | INFO | Scanning 192.168.56.101
+2026-07-28 14:49:49 | INFO | 192.168.56.101 -> Risk=Low Score=100
+2026-07-28 14:49:49 | INFO | Inventory updated
+2026-07-28 22:17:49 | INFO | Audit Engine Started
+2026-07-28 22:17:49 | INFO | Target: 192.168.1.20
+2026-07-28 22:17:57 | INFO | 1 active hosts discovered
+2026-07-28 22:17:57 | INFO | Scanning 192.168.1.20
+2026-07-28 22:19:07 | INFO | 192.168.1.20 -> Risk=High Score=40
+2026-07-28 22:19:07 | INFO | Inventory updated
+2026-07-28 22:22:14 | INFO | Audit Engine Started
+2026-07-28 22:22:14 | INFO | Target: 192.168.1.10
+2026-07-28 22:22:14 | INFO | 1 active hosts discovered
+2026-07-28 22:22:14 | INFO | Scanning 192.168.1.10
+2026-07-28 22:22:51 | INFO | 192.168.1.10 -> Risk=Low Score=85
+2026-07-28 22:22:51 | INFO | Inventory updated
+2026-07-28 22:32:30 | INFO | Audit Engine Started
+2026-07-28 22:32:30 | INFO | Target: 192.168.1.20
+2026-07-28 22:32:30 | INFO | 1 active hosts discovered
+2026-07-28 22:32:30 | INFO | Scanning 192.168.1.20
+2026-07-28 22:33:40 | INFO | 192.168.1.20 -> Risk=High Score=40
+2026-07-28 22:33:40 | INFO | Inventory updated
+2026-07-28 22:39:55 | INFO | Audit Engine Started
+2026-07-28 22:39:55 | INFO | Target: 192.168.1.0/24
+2026-07-28 22:39:58 | INFO | 2 active hosts discovered
+2026-07-28 22:39:58 | INFO | Scanning 192.168.1.20
+2026-07-28 22:40:29 | INFO | Audit Engine Started
+2026-07-28 22:40:29 | INFO | Target: 192.168.1.0/24
+2026-07-28 22:40:34 | INFO | 2 active hosts discovered
+2026-07-28 22:40:34 | INFO | Scanning 192.168.1.20
+2026-07-28 22:41:09 | INFO | 192.168.1.20 -> Risk=High Score=40
+2026-07-28 22:41:09 | INFO | Scanning 192.168.1.10
+2026-07-28 22:48:12 | INFO | Audit Engine Started
+2026-07-28 22:48:12 | INFO | Target: 192.168.1.20
+2026-07-28 22:48:13 | INFO | 1 active hosts discovered
+2026-07-28 22:48:13 | INFO | Scanning 192.168.1.20
+2026-07-28 22:49:23 | INFO | 192.168.1.20 -> Risk=High Score=40
+2026-07-28 22:49:23 | INFO | Inventory updated
+2026-07-28 22:56:27 | INFO | Audit Engine Started
+2026-07-28 22:56:27 | INFO | Target: 192.168.1.0/24
+2026-07-28 22:56:30 | INFO | 2 active hosts discovered
+2026-07-28 22:56:30 | INFO | Scanning 192.168.1.20
+2026-07-28 22:57:43 | INFO | 192.168.1.20 -> Risk=High Score=40
+2026-07-28 22:57:43 | INFO | Scanning 192.168.1.10
+2026-07-28 22:59:46 | INFO | 192.168.1.10 -> Risk=Low Score=85
+2026-07-28 22:59:46 | INFO | Inventory updated
+2026-07-28 23:49:32 | INFO | Audit Engine Started
+2026-07-28 23:49:32 | INFO | Target: 192.168.1.20
+2026-07-28 23:49:49 | INFO | 1 active hosts discovered
+2026-07-28 23:49:49 | INFO | Scanning 192.168.1.20
+2026-07-28 23:50:58 | INFO | 192.168.1.20 -> Risk=High Score=40
+2026-07-28 23:50:58 | INFO | Inventory updated
