@@ -178,3 +178,81 @@
 2026-07-28 23:49:49 | INFO | Scanning 192.168.1.20
 2026-07-28 23:50:58 | INFO | 192.168.1.20 -> Risk=High Score=40
 2026-07-28 23:50:58 | INFO | Inventory updated
+2026-08-05 19:56:37 | INFO | Audit Engine Started - Mode: full
+2026-08-05 19:56:37 | INFO | Target: 192.168.1.20/24
+2026-08-05 19:56:49 | INFO | 2 active hosts discovered
+2026-08-05 19:56:49 | INFO | Scanning 192.168.1.20
+2026-08-05 19:58:04 | INFO | Audit Engine Started - Mode: full
+2026-08-05 19:58:04 | INFO | Target: 192.168.1.0/24
+2026-08-05 19:58:12 | INFO | 2 active hosts discovered
+2026-08-05 19:58:12 | INFO | Scanning 192.168.1.20
+2026-08-05 19:59:26 | INFO | 192.168.1.20 -> Risk=High Score=40
+2026-08-05 19:59:26 | INFO | Scanning 192.168.1.10
+2026-08-05 20:00:39 | INFO | Audit Engine Started - Mode: full
+2026-08-05 20:00:39 | INFO | Target: 192.168.1.0/24
+2026-08-05 20:00:46 | INFO | 2 active hosts discovered
+2026-08-05 20:00:46 | INFO | Scanning 192.168.1.20
+2026-08-05 20:01:12 | INFO | Audit Engine Started - Mode: full
+2026-08-05 20:01:12 | INFO | Target: 192.168.1.0/24
+2026-08-05 20:01:29 | INFO | 2 active hosts discovered
+2026-08-05 20:01:29 | INFO | Scanning 192.168.1.20
+2026-08-05 20:02:42 | INFO | 192.168.1.20 -> Risk=High Score=40
+2026-08-05 20:02:42 | INFO | Scanning 192.168.1.10
+2026-08-05 20:06:10 | INFO | 192.168.1.10 -> Risk=Low Score=85
+2026-08-05 20:06:10 | INFO | Inventory updated
+2026-08-05 20:08:24 | INFO | Audit Engine Started - Mode: full
+2026-08-05 20:08:24 | INFO | Target: 192.168.1.0/24
+2026-08-05 20:08:31 | INFO | 2 active hosts discovered
+2026-08-05 20:08:31 | INFO | Scanning 192.168.1.20
+2026-08-05 20:09:45 | INFO | 192.168.1.20 -> Risk=High Score=40
+2026-08-05 20:09:45 | INFO | Scanning 192.168.1.10
+2026-08-05 20:11:24 | INFO | 192.168.1.10 -> Risk=Low Score=85
+2026-08-05 20:11:24 | INFO | Inventory updated
+2026-08-05 20:13:05 | INFO | Audit Engine Started - Mode: full
+2026-08-05 20:13:05 | INFO | Target: 192.168.1.0/24
+2026-08-05 20:13:15 | INFO | 2 active hosts discovered
+2026-08-05 20:13:15 | INFO | Scanning 192.168.1.20
+2026-08-05 20:14:42 | INFO | 192.168.1.20 -> Risk=High Score=40
+2026-08-05 20:14:42 | INFO | Scanning 192.168.1.10
+2026-08-05 20:18:06 | INFO | 192.168.1.10 -> Risk=Low Score=85
+2026-08-05 20:18:06 | INFO | Inventory updated
+2026-08-05 20:35:12 | INFO | Audit Engine Started - Mode: discovery
+2026-08-05 20:35:12 | INFO | Target: 192.168.1.0/24
+2026-08-05 20:35:12 | INFO | Mode: Host Discovery (nmap -sn)
+2026-08-05 20:35:38 | INFO | 2 active hosts discovered
+2026-08-05 20:36:51 | INFO | Audit Engine Started - Mode: discovery
+2026-08-05 20:36:51 | INFO | Target: 192.168.1.0/24
+2026-08-05 20:36:51 | INFO | Mode: Host Discovery (nmap -sn)
+2026-08-05 20:37:03 | INFO | 2 active hosts discovered
+2026-08-05 20:37:42 | INFO | Audit Engine Started - Mode: ports
+2026-08-05 20:37:42 | INFO | Target: 192.168.1.20
+2026-08-05 20:37:42 | INFO | Mode: Port Sweep (nmap -sV --open -T4)
+2026-08-05 20:37:46 | INFO | 1 active hosts discovered
+2026-08-05 20:37:46 | INFO | Port sweeping 192.168.1.20
+2026-08-07 12:51:26 | INFO | Audit Engine Started - Mode: full
+2026-08-07 12:51:26 | INFO | Target: 192.168.1.10
+2026-08-07 12:51:26 | INFO | Mode: Full Audit (nmap -A)
+2026-08-07 12:51:51 | INFO | 1 active hosts discovered
+2026-08-07 12:51:51 | INFO | Full scan on 192.168.1.10
+2026-08-07 12:55:14 | INFO | 192.168.1.10 -> Risk=Low Score=88
+2026-08-07 12:55:14 | INFO | Inventory updated
+2026-08-07 12:56:51 | INFO | Audit Engine Started - Mode: full
+2026-08-07 12:56:51 | INFO | Target: 192.168.1.0/24
+2026-08-07 12:56:51 | INFO | Mode: Full Audit (nmap -A)
+2026-08-07 12:57:01 | INFO | 2 active hosts discovered
+2026-08-07 12:57:01 | INFO | Full scan on 192.168.1.20
+2026-08-07 12:59:04 | INFO | Audit Engine Started - Mode: full
+2026-08-07 12:59:04 | INFO | Target: 192.168.1.0/24
+2026-08-07 12:59:04 | INFO | Mode: Full Audit (nmap -A)
+2026-08-07 12:59:17 | INFO | 2 active hosts discovered
+2026-08-07 12:59:17 | INFO | Full scan on 192.168.1.20
+2026-08-07 13:04:51 | INFO | Audit Engine Started - Mode: full
+2026-08-07 13:04:51 | INFO | Target: 192.168.1.0/24
+2026-08-07 13:04:51 | INFO | Mode: Full Audit (nmap -A)
+2026-08-07 13:05:00 | INFO | 2 active hosts discovered
+2026-08-07 13:05:00 | INFO | Full scan on 192.168.1.20
+2026-08-07 13:06:10 | INFO | 192.168.1.20 -> Risk=Critical Score=32
+2026-08-07 13:06:10 | INFO | Full scan on 192.168.1.10
+2026-08-07 13:08:32 | INFO | 192.168.1.10 -> Risk=Low Score=88
+2026-08-07 13:08:32 | INFO | Inventory updated
+2026-08-07 13:08:32 | INFO | Historical comparison generated

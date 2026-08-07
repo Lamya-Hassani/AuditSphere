@@ -1,5 +1,5 @@
-import { renderNavbar, showToast, getSeverityBadgeClass } from './app.js';
-import { API } from './api.js';
+import { renderNavbar, showToast, showConfirm, getSeverityBadgeClass, formatDate } from './app.js?v=1.0.3';
+import { API } from './api.js?v=1.0.3';
 
 let currentStatusFilter = '';
 let searchDebounce = null;
@@ -54,15 +54,18 @@ async function loadInventory(search, status) {
     // Update Filter Counts
     const upCount = devices.filter(d => d.status === 'up').length;
     const downCount = devices.filter(d => d.status === 'down').length;
-    document.getElementById('up-count').textContent = upCount;
-    document.getElementById('down-count').textContent = downCount;
+    
+    const upEl = document.getElementById('up-count');
+    const downEl = document.getElementById('down-count');
+    if (upEl) upEl.textContent = upCount;
+    if (downEl) downEl.textContent = downCount;
 
     if (devices.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="8" class="text-center text-muted py-4">
+          <td colspan="7" class="text-center text-muted py-4">
             <i class="bi bi-hdd-network fs-3 d-block mb-2 text-secondary"></i>
-            No network devices found matching criteria.
+            No discovered systems found matching selection.
           </td>
         </tr>
       `;
@@ -70,33 +73,31 @@ async function loadInventory(search, status) {
     }
 
     tbody.innerHTML = devices.map(device => {
-      const riskClass = getSeverityBadgeClass(device.latest_risk_level);
+      const isOnline = (device.status || '').toLowerCase() === 'up';
+      const lastSeen = formatDate(device.updated_at || device.created_at);
+      
       return `
         <tr>
-          <td>
-            <span class="status-dot ${device.status === 'up' ? 'dot-online' : 'dot-offline'}"></span>
-            <span class="small text-uppercase fw-bold ${device.status === 'up' ? 'text-success' : 'text-danger'}">${device.status}</span>
-          </td>
           <td><span class="code-box">${device.ip}</span></td>
-          <td class="fw-semibold">${device.hostname || '<span class="text-muted">N/A</span>'}</td>
-          <td>
-            <div class="small">${device.vendor || 'Unknown Vendor'}</div>
-            <div class="text-muted text-uppercase" style="font-size:0.75rem;">${device.mac || 'No MAC'}</div>
-          </td>
+          <td class="fw-semibold text-dark">${device.hostname || 'Unknown'}</td>
           <td class="small text-muted">${device.operating_system || 'Generic OS'}</td>
           <td>
-            <span class="badge bg-secondary">${device.open_ports_count || 0} Open Ports</span>
+            <span class="status-dot ${isOnline ? 'dot-online' : 'dot-offline'}"></span>
+            <span class="small text-uppercase fw-bold ${isOnline ? 'text-success' : 'text-danger'}">${device.status}</span>
           </td>
           <td>
-            <span class="badge ${riskClass}">${device.latest_risk_level || 'Unknown'}</span>
+            <span class="badge bg-secondary text-dark border-secondary">${device.open_ports_count || 0} Ports open</span>
           </td>
+          <td class="small text-muted">${lastSeen}</td>
           <td class="text-end">
-            <button class="btn btn-cyber-outline btn-sm me-1 view-device-btn" data-id="${device.id}">
-              <i class="bi bi-search me-1"></i> Inspect
-            </button>
-            <button class="btn btn-cyber-danger btn-sm delete-device-btn" data-id="${device.id}">
-              <i class="bi bi-trash"></i>
-            </button>
+            <div class="d-inline-flex gap-1">
+              <button class="btn btn-cyber-outline btn-sm view-device-btn" data-id="${device.id}">
+                <i class="bi bi-search me-1"></i>Inspect
+              </button>
+              <button class="btn btn-cyber-danger btn-sm delete-device-btn" data-id="${device.id}">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
           </td>
         </tr>
       `;
@@ -118,7 +119,7 @@ async function loadInventory(search, status) {
 
 async function openDeviceModal(deviceId) {
   const modalBody = document.getElementById('modalDeviceBody');
-  modalBody.innerHTML = `<div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-info me-2"></div> Loading device telemetry...</div>`;
+  modalBody.innerHTML = `<div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div> Loading device details...</div>`;
   deviceModalInstance.show();
 
   try {
@@ -128,76 +129,76 @@ async function openDeviceModal(deviceId) {
       ? device.ports.map(p => `
           <tr>
             <td><span class="code-box">${p.number}/${p.protocol}</span></td>
-            <td><span class="badge bg-safe">${p.state}</span></td>
-            <td class="fw-semibold text-info">${p.service}</td>
+            <td><span class="badge bg-success-subtle text-success border border-success-subtle">${p.state}</span></td>
+            <td class="fw-semibold text-primary">${p.service}</td>
             <td class="small text-muted">${p.product || ''} ${p.version || ''}</td>
           </tr>
         `).join('')
-      : `<tr><td colspan="4" class="text-center text-muted py-2">No open ports detected</td></tr>`;
+      : `<tr><td colspan="4" class="text-center text-muted py-2">No active ports identified</td></tr>`;
 
     const findingsHtml = device.recent_findings && device.recent_findings.length > 0
       ? device.recent_findings.map(f => `
-          <div class="p-3 mb-2 rounded-3 border" style="background:rgba(255,255,255,0.02); border-color:rgba(255,255,255,0.08)!important;">
+          <div class="p-3 mb-2 rounded border bg-light">
             <div class="d-flex justify-content-between align-items-center mb-1">
-              <span class="badge ${getSeverityBadgeClass(f.severity)}">${f.severity} Severity</span>
+              <span class="badge-cyber ${getSeverityBadgeClass(f.severity)}">${f.severity} Severity</span>
               <span class="small text-muted">Port ${f.port} (${f.service})</span>
             </div>
-            <p class="mb-1 small fw-semibold">${f.description}</p>
+            <p class="mb-1 small fw-semibold text-dark">${f.description}</p>
             <p class="mb-0 text-muted" style="font-size:0.8rem;"><i class="bi bi-shield-check text-success me-1"></i> Recommendation: ${f.recommendation}</p>
           </div>
         `).join('')
-      : `<p class="text-muted small">No active security findings recorded for this device.</p>`;
+      : `<p class="text-muted small py-2"><i class="bi bi-check-circle text-success me-1"></i> No active vulnerability findings identified on this host.</p>`;
 
     modalBody.innerHTML = `
       <div class="row mb-3 g-2">
         <div class="col-md-6">
-          <div class="p-3 rounded-3" style="background:rgba(255,255,255,0.03);">
+          <div class="p-3 rounded border bg-light">
             <div class="text-muted small">IP Address</div>
-            <div class="fw-bold fs-5 text-info">${device.ip}</div>
+            <div class="fw-bold fs-5 text-dark">${device.ip}</div>
             <div class="text-muted small mt-1">Hostname: ${device.hostname || 'N/A'}</div>
           </div>
         </div>
         <div class="col-md-6">
-          <div class="p-3 rounded-3" style="background:rgba(255,255,255,0.03);">
-            <div class="text-muted small">MAC / Vendor</div>
-            <div class="fw-semibold">${device.vendor || 'Generic Host'}</div>
-            <div class="text-muted small mt-1">MAC: ${device.mac || 'N/A'}</div>
+          <div class="p-3 rounded border bg-light">
+            <div class="text-muted small">Hardware & OS</div>
+            <div class="fw-semibold text-dark">${device.vendor || 'Generic Host'}</div>
+            <div class="text-muted small mt-1">OS: ${device.operating_system || 'N/A'}</div>
           </div>
         </div>
       </div>
 
-      <h6 class="fw-bold mb-2 text-info"><i class="bi bi-diagram-2 me-1"></i> Open Ports & Services</h6>
+      <h6 class="fw-bold mb-2 text-dark"><i class="bi bi-diagram-2 me-1"></i> Open Ports & Active Services</h6>
       <div class="table-responsive mb-4">
-        <table class="table table-cyber table-sm align-middle">
+        <table class="table table-cyber table-sm align-middle mb-0">
           <thead>
             <tr>
               <th>Port</th>
               <th>State</th>
               <th>Service</th>
-              <th>Product Version</th>
+              <th>Product / Version</th>
             </tr>
           </thead>
           <tbody>${portsHtml}</tbody>
         </table>
       </div>
 
-      <h6 class="fw-bold mb-2 text-warning"><i class="bi bi-bug me-1"></i> Security Vulnerabilities</h6>
+      <h6 class="fw-bold mb-2 text-dark"><i class="bi bi-bug me-1"></i> Vulnerability Findings</h6>
       <div>${findingsHtml}</div>
     `;
 
   } catch (error) {
-    modalBody.innerHTML = `<div class="alert alert-danger">Error loading device detail: ${error.message}</div>`;
+    modalBody.innerHTML = `<div class="alert alert-danger">Error loading device details: ${error.message}</div>`;
   }
 }
 
 async function handleDeleteDevice(id) {
-  if (confirm(`Are you sure you want to remove Device #${id} from inventory?`)) {
-    try {
-      await API.deleteDevice(id);
-      showToast(`Device #${id} removed from inventory`, 'success');
-      loadInventory(document.getElementById('inventory-search').value.trim(), currentStatusFilter);
-    } catch (error) {
-      showToast(`Failed to delete device: ${error.message}`, 'danger');
-    }
+  const confirmed = await showConfirm(`Remove Device #${id} from inventory? This cannot be undone.`);
+  if (!confirmed) return;
+  try {
+    await API.deleteDevice(id);
+    showToast(`Device #${id} removed from inventory.`, 'success');
+    loadInventory(document.getElementById('inventory-search').value.trim(), currentStatusFilter);
+  } catch (error) {
+    showToast(`Failed to delete device: ${error.message}`, 'danger');
   }
 }

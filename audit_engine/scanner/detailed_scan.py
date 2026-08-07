@@ -4,6 +4,21 @@ from pathlib import Path
 TEMP_FOLDER = Path("temp")
 HOST_XML = TEMP_FOLDER / "host.xml"
 
+# Safe, non-intrusive NSE discovery scripts
+NSE_SCRIPTS = ",".join([
+    "ftp-anon",
+    "http-title",
+    "http-server-header",
+    "http-methods",
+    "ssl-cert",
+    "ssl-enum-ciphers",
+    "smb-protocols",
+    "smb-security-mode",
+    "ssh2-enum-algos",
+    "ssh-hostkey",
+    "snmp-info",
+])
+
 
 def run_detailed_scan(target):
 
@@ -15,8 +30,8 @@ def run_detailed_scan(target):
         "sudo",
         "nmap",
         "-A",
-        "-oX",
-        str(HOST_XML),
+        "--script", NSE_SCRIPTS,
+        "-oX", str(HOST_XML),
         target
     ]
 

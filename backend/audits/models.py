@@ -26,6 +26,8 @@ class Audit(models.Model):
 
     laboratory_security_score = models.IntegerField()
 
+    comparison_data = models.JSONField(default=dict, blank=True, null=True)
+
     status = models.CharField(
         max_length=20,
         choices=STATUS,
@@ -43,7 +45,8 @@ class Audit(models.Model):
 
     def __str__(self):
         return f"Audit #{self.id}"
-    
+
+
 class AuditDevice(models.Model):
 
     audit = models.ForeignKey(
@@ -69,8 +72,8 @@ class AuditDevice(models.Model):
 
     def __str__(self):
         return f"{self.audit.id} - {self.device.ip}"
-    
-    
+
+
 class Finding(models.Model):
 
     audit_device = models.ForeignKey(
@@ -102,6 +105,12 @@ class Finding(models.Model):
     recommendation = models.TextField()
 
     points = models.IntegerField()
+
+    cve_id = models.CharField(max_length=50, blank=True, null=True)
+
+    cvss_score = models.FloatField(blank=True, null=True)
+
+    source = models.CharField(max_length=50, default="rule")
 
     def __str__(self):
         return f"{self.service} ({self.severity})"

@@ -1,8 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from django.db.models import Avg, Sum
 
+from accounts.permissions import IsAuditorOrAdmin
 from audits.models import Audit, AuditStatistic
 from audits.serializers import AuditSerializer
 from inventory.models import Device
@@ -14,6 +16,7 @@ class DashboardSummaryView(APIView):
     GET /api/dashboard/
     Returns high-level aggregated metrics and recent activity for the security dashboard.
     """
+    permission_classes = [IsAuthenticated, IsAuditorOrAdmin]
 
     def get(self, request):
         total_audits = Audit.objects.count()
@@ -32,6 +35,8 @@ class DashboardSummaryView(APIView):
             .first()
         )
 
+        latest_security_score = latest_audit_obj.laboratory_security_score if latest_audit_obj else None
+        latest_audit_data = None
         if latest_audit_obj:
             latest_audit_data = {
                 "id": latest_audit_obj.id,
@@ -41,41 +46,25 @@ class DashboardSummaryView(APIView):
                 "laboratory_security_score": latest_audit_obj.laboratory_security_score,
                 "status": latest_audit_obj.status,
             }
-            latest_security_score = latest_audit_obj.laboratory_security_score
 
-            # Vulnerability summary from latest audit stats
-            if hasattr(latest_audit_obj, "statistics") and latest_audit_obj.statistics:
-                stats = latest_audit_obj.statistics
-                vuln_summary = {
-                    "critical": stats.critical,
-                    "high": stats.high,
-                    "medium": stats.medium,
-                    "low": stats.low,
-                    "total": stats.critical + stats.high + stats.medium + stats.low,
-                }
-            else:
-                vuln_summary = {"critical": 0, "high": 0, "medium": 0, "low": 0, "total": 0}
-        else:
-            latest_audit_data = None
-            latest_security_score = None
-            # Aggregated summary across all AuditStatistics if any exist
-            aggregated = AuditStatistic.objects.aggregate(
-                crit=Sum("critical"),
-                h=Sum("high"),
-                m=Sum("medium"),
-                l=Sum("low")
-            )
-            c = aggregated["crit"] or 0
-            h = aggregated["h"] or 0
-            m = aggregated["m"] or 0
-            l = aggregated["l"] or 0
-            vuln_summary = {
-                "critical": c,
-                "high": h,
-                "medium": m,
-                "low": l,
-                "total": c + h + m + l,
-            }
+        # Aggregate vulnerability counts across ALL audits (not just the latest)
+        aggregated = AuditStatistic.objects.aggregate(
+            crit=Sum("critical"),
+            h=Sum("high"),
+            m=Sum("medium"),
+            l=Sum("low"),
+        )
+        c = aggregated["crit"] or 0
+        h = aggregated["h"] or 0
+        m = aggregated["m"] or 0
+        l = aggregated["l"] or 0
+        vuln_summary = {
+            "critical": c,
+            "high": h,
+            "medium": m,
+            "low": l,
+            "total": c + h + m + l,
+        }
 
         recent_audits_qs = Audit.objects.all().order_by("-scan_date")[:5]
         recent_audits_data = [

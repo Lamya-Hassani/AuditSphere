@@ -5,6 +5,7 @@ from .views import (
     AuditListView,
     AuditDetailView,
     RescanAuditView,
+    AuditPDFReportView,
 )
 
 urlpatterns = [
@@ -27,5 +28,10 @@ urlpatterns = [
         "<int:pk>/rescan/",
         RescanAuditView.as_view(),
         name="audit-rescan"
+    ),
+    path(
+        "<int:pk>/pdf/",
+        AuditPDFReportView.as_view(),
+        name="audit-pdf"
     ),
 ]

@@ -1,5 +1,5 @@
-import { renderNavbar, formatDate, showToast } from './app.js';
-import { API } from './api.js';
+import { renderNavbar, formatDate, showToast, getSeverityBadgeClass } from './app.js?v=1.0.3';
+import { API } from './api.js?v=1.0.3';
 
 document.addEventListener('DOMContentLoaded', async () => {
   renderNavbar('dashboard');
@@ -28,41 +28,10 @@ async function loadDashboardData() {
     document.getElementById('metric-online-devices').textContent = data.online_devices ?? 0;
     document.getElementById('metric-avg-score').textContent = `${data.average_security_score ?? 0}%`;
 
-    // 2. Score Circle
-    const scoreVal = data.latest_security_score ?? 0;
-    const scoreCircle = document.getElementById('score-circle-element');
-    const scoreTextStatus = document.getElementById('score-text-status');
-    const scoreValueEl = document.getElementById('score-value');
-
-    scoreValueEl.textContent = data.latest_security_score !== null ? scoreVal : '--';
-
-    let scoreColor = '#38bdf8';
-    let statusLabel = 'Optimal';
-
-    if (scoreVal >= 80) {
-      scoreColor = '#10b981';
-      statusLabel = 'Strong Posture';
-    } else if (scoreVal >= 60) {
-      scoreColor = '#eab308';
-      statusLabel = 'Moderate Risk';
-    } else if (scoreVal > 0) {
-      scoreColor = '#f43f5e';
-      statusLabel = 'Critical Risk';
-    } else {
-      statusLabel = 'No Scans Run';
-    }
-
-    if (scoreCircle) {
-      scoreCircle.style.setProperty('--score', scoreVal);
-      scoreCircle.style.setProperty('--score-color', scoreColor);
-    }
-    if (scoreTextStatus) {
-      scoreTextStatus.textContent = statusLabel;
-      scoreTextStatus.style.color = scoreColor;
-    }
-
-    // 3. Vulnerability Distribution
     const vulns = data.vulnerability_summary || { critical: 0, high: 0, medium: 0, low: 0, total: 0 };
+    document.getElementById('metric-critical-high').textContent = (vulns.critical ?? 0) + (vulns.high ?? 0);
+
+    // 2. Vulnerability Distribution
     const totalVulns = vulns.total || 1;
 
     document.getElementById('count-critical').textContent = vulns.critical;
@@ -75,8 +44,11 @@ async function loadDashboardData() {
     document.getElementById('bar-medium').style.width = `${(vulns.medium / totalVulns) * 100}%`;
     document.getElementById('bar-low').style.width = `${(vulns.low / totalVulns) * 100}%`;
 
-    // 4. Recent Audits Table
+    // 3. Recent Audits Table
     renderRecentAudits(data.recent_audits || []);
+
+    // 4. Security Score Trend & Most Vulnerable Devices
+    await loadTrendAndVulnerableDevices();
 
   } catch (error) {
     showToast(`Failed to load dashboard: ${error.message}`, 'danger');
@@ -91,8 +63,7 @@ function renderRecentAudits(audits) {
     tbody.innerHTML = `
       <tr>
         <td colspan="5" class="text-center text-muted py-4">
-          <i class="bi bi-shield-x fs-3 d-block mb-2 text-secondary"></i>
-          No audit scans recorded yet. <a href="scan.html" class="text-info fw-semibold">Launch your first audit</a>.
+          No audit scans recorded yet. <a href="scan.html" class="text-primary fw-semibold">Launch your first audit</a>.
         </td>
       </tr>
     `;
@@ -106,18 +77,83 @@ function renderRecentAudits(audits) {
       </td>
       <td class="text-muted small">${formatDate(audit.scan_date)}</td>
       <td>
-        <span class="badge ${audit.laboratory_security_score >= 80 ? 'bg-safe' : audit.laboratory_security_score >= 60 ? 'bg-medium' : 'bg-critical'}">
+        <span class="badge-cyber ${audit.laboratory_security_score >= 80 ? 'bg-safe' : audit.laboratory_security_score >= 60 ? 'bg-medium' : 'bg-critical'}">
           ${audit.laboratory_security_score} / 100
         </span>
       </td>
       <td>
-        <span class="badge bg-secondary text-uppercase">${audit.status}</span>
+        <span class="badge-cyber bg-secondary">${audit.status}</span>
       </td>
       <td class="text-end">
         <a href="audit-details.html?id=${audit.id}" class="btn btn-cyber-outline btn-sm me-1">
-          <i class="bi bi-eye me-1"></i> View
+          <i class="bi bi-eye"></i> View
         </a>
       </td>
     </tr>
   `).join('');
+}
+
+async function loadTrendAndVulnerableDevices() {
+  try {
+    // Trend List
+    const scoreTrendList = document.getElementById('score-trend-list');
+    const audits = await API.getAudits();
+    if (scoreTrendList) {
+      if (audits.length === 0) {
+        scoreTrendList.innerHTML = `<div class="text-muted small py-2 text-center">No trend data.</div>`;
+      } else {
+        // Take latest 5 completed audits
+        const completedAudits = audits.filter(a => a.status === 'completed').slice(0, 5);
+        scoreTrendList.innerHTML = completedAudits.map(audit => `
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+            <div>
+              <span class="small text-muted d-block">${formatDate(audit.scan_date)}</span>
+              <span class="code-box small">${audit.target}</span>
+            </div>
+            <span class="fw-bold text-dark fs-6">${audit.laboratory_security_score}/100</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    // Vulnerable Devices
+    const vulnerableDevicesBody = document.getElementById('vulnerable-devices-body');
+    if (vulnerableDevicesBody) {
+      const devices = await API.getInventoryDevices();
+      
+      // Filter out clean/unknown or sort by vulnerability level
+      // Level hierarchy: critical > high > medium > low > unknown
+      const levelWeight = { 'critical': 4, 'high': 3, 'medium': 2, 'low': 1, 'unknown': 0 };
+      const sortedDevices = [...devices].sort((a, b) => {
+        const weightA = levelWeight[a.latest_risk_level?.toLowerCase()] || 0;
+        const weightB = levelWeight[b.latest_risk_level?.toLowerCase()] || 0;
+        return weightB - weightA;
+      }).slice(0, 5); // top 5
+
+      if (sortedDevices.length === 0) {
+        vulnerableDevicesBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center text-muted py-3">No inventory devices recorded.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      vulnerableDevicesBody.innerHTML = sortedDevices.map(device => {
+        const riskLevel = device.latest_risk_level || 'unknown';
+        const riskClass = getSeverityBadgeClass(riskLevel);
+        return `
+          <tr>
+            <td><span class="code-box">${device.ip}</span></td>
+            <td class="fw-semibold">${device.hostname || 'N/A'}</td>
+            <td class="small text-muted">${device.operating_system || 'Generic OS'}</td>
+            <td class="small text-muted">${device.open_ports_count || 0} Ports open</td>
+            <td><span class="badge-cyber ${riskClass}">${riskLevel}</span></td>
+          </tr>
+        `;
+      }).join('');
+    }
+  } catch (error) {
+    console.error('Error loading trend and vulnerable devices', error);
+  }
 }

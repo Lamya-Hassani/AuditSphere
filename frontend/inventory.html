@@ -3,91 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Network Inventory - Cybersecurity Audit Platform</title>
+  <title>Inventory - Cybersecurity Audit Platform</title>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <!-- Custom Cyber Styling -->
+  <!-- Custom Styling -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- Mount Point for Top Navigation -->
+  <!-- Sidebar & Topbar Mount Point -->
   <div id="navbar-mount"></div>
 
-  <!-- Main Container -->
-  <main class="container-fluid px-lg-4 py-4">
-
-    <!-- Header Title & Filter Bar -->
-    <div class="row align-items-center mb-4">
-      <div class="col-md-6">
-        <h3 class="fw-bold mb-1 d-flex align-items-center gap-2">
-          <i class="bi bi-hdd-network-fill text-info"></i>
-          <span>Discovered Network Devices</span>
-        </h3>
-        <p class="text-muted small mb-0">Hardware inventory, port mapping, and host vulnerability tracking</p>
-      </div>
-
-      <div class="col-md-6 mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end">
+  <!-- Main Content Wrapper -->
+  <main class="main-wrapper">
+    <div class="content-container">
+      
+      <!-- Page Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="fw-bold mb-1 text-dark">Network Host Inventory</h2>
+          <p class="text-muted mb-0">Discovered network hardware, active ports, operating systems, and threat postures.</p>
+        </div>
         <div class="btn-group" role="group">
           <button id="filter-all" class="btn btn-cyber-outline btn-sm active">All Devices</button>
           <button id="filter-up" class="btn btn-cyber-outline btn-sm">Online (<span id="up-count">0</span>)</button>
           <button id="filter-down" class="btn btn-cyber-outline btn-sm">Offline (<span id="down-count">0</span>)</button>
         </div>
       </div>
-    </div>
 
-    <!-- Search Input Bar -->
-    <div class="cyber-card p-3 mb-4">
-      <div class="input-group">
-        <span class="input-group-text bg-dark text-muted border-secondary"><i class="bi bi-search"></i></span>
-        <input type="text" id="inventory-search" class="form-control bg-dark text-white border-secondary" placeholder="Search by IP address, Hostname, Vendor, or Operating System...">
-        <button id="clear-search-btn" class="btn btn-cyber-outline"><i class="bi bi-x-lg"></i> Clear</button>
+      <!-- Search Input Bar -->
+      <div class="cyber-card p-3 mb-4">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input type="text" id="inventory-search" class="form-control" placeholder="Search by IP, Hostname, OS, or Vendor...">
+          <button id="clear-search-btn" class="btn btn-cyber-outline"><i class="bi bi-x-lg"></i> Clear</button>
+        </div>
       </div>
-    </div>
 
-    <!-- Devices Grid / Table Container -->
-    <div class="cyber-card p-4">
-      <div class="table-responsive">
-        <table class="table table-cyber align-middle mb-0">
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>IP Address</th>
-              <th>Hostname</th>
-              <th>MAC & Vendor</th>
-              <th>Operating System</th>
-              <th>Open Ports</th>
-              <th>Latest Risk Level</th>
-              <th class="text-end">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="inventory-tbody">
-            <tr>
-              <td colspan="8" class="text-center text-muted py-4">Loading discovered network devices...</td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Devices Inventory Table Card -->
+      <div class="cyber-card p-0">
+        <div class="table-responsive">
+          <table class="table table-cyber align-middle mb-0">
+            <thead>
+              <tr>
+                <th>IP Address</th>
+                <th>Hostname</th>
+                <th>Operating System</th>
+                <th>Status</th>
+                <th>Open Ports</th>
+                <th>Last Seen</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="inventory-tbody">
+              <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                  <div class="spinner-border spinner-border-sm text-primary me-2"></div> Loading discovered network devices...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
+    </div>
   </main>
 
-  <!-- Device Detail Modal -->
+  <!-- Device Telemetry Detail Modal -->
   <div class="modal fade" id="deviceModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content text-white" style="background:#0f172a; border:1px solid rgba(255,255,255,0.15);">
-        <div class="modal-header border-secondary">
-          <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="modalDeviceTitle">
-            <i class="bi bi-hdd-rack text-info"></i> Device Telemetry Details
+      <div class="modal-content" style="background:#ffffff; border:1px solid #cbd5e1; border-radius: 4px;">
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title fw-bold d-flex align-items-center gap-2 text-dark" id="modalDeviceTitle">
+            <i class="bi bi-hdd-rack text-primary"></i> Host Details & Telemetry
           </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body" id="modalDeviceBody">
+        <div class="modal-body text-dark" id="modalDeviceBody">
           <div class="text-center py-4 text-muted">Loading telemetry data...</div>
         </div>
-        <div class="modal-footer border-secondary">
+        <div class="modal-footer border-top bg-light">
           <button type="button" class="btn btn-cyber-outline btn-sm" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
@@ -97,6 +94,6 @@
   <!-- Bootstrap Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Page Scripts -->
-  <script type="module" src="js/inventory.js"></script>
+  <script type="module" src="js/inventory.js?v=1.0.3"></script>
 </body>
 </html>

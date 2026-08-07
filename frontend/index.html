@@ -8,199 +8,226 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <!-- Custom Cyber Styling -->
+  <!-- Custom Styling -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- Mount Point for Top Navigation -->
+  <!-- Sidebar & Topbar Mount Point -->
   <div id="navbar-mount"></div>
 
-  <!-- Main Container -->
-  <main class="container-fluid px-lg-4 py-4">
-
-    <!-- Header Title & Quick Target Input -->
-    <div class="row align-items-center mb-4">
-      <div class="col-md-7">
-        <h3 class="fw-bold mb-1 d-flex align-items-center gap-2">
-          <span>Security Operations Dashboard</span>
-          <span class="badge bg-safe fs-6"><i class="bi bi-shield-check me-1"></i> Engine Active</span>
-        </h3>
-        <p class="text-muted small mb-0">Real-time network security scoring, risk telemetry, and audit management</p>
-      </div>
-      <div class="col-md-5 mt-3 mt-md-0">
-        <form id="quick-scan-form" class="d-flex gap-2">
-          <div class="input-group">
-            <span class="input-group-text bg-dark text-muted border-secondary"><i class="bi bi-crosshair"></i></span>
-            <input type="text" id="quick-target" class="form-control bg-dark text-white border-secondary" placeholder="Target IP or CIDR (e.g. 192.168.1.0/24)" required>
-          </div>
-          <button type="submit" class="btn btn-cyber-primary text-nowrap d-flex align-items-center gap-1">
-            <i class="bi bi-radar"></i> Scan
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Top Score & Metric Cards Row -->
-    <div class="row g-3 mb-4">
-
-      <!-- Overall Score Radial Gauge Card -->
-      <div class="col-xl-3 col-md-6">
-        <div class="cyber-card p-4 h-100 d-flex align-items-center justify-content-between">
-          <div>
-            <span class="text-muted text-uppercase fw-semibold small d-block mb-1">Laboratory Security Score</span>
-            <h4 id="score-text-status" class="fw-bold mb-1 text-info">Analyzing...</h4>
-            <span id="score-subtitle" class="text-muted small">Based on latest audit run</span>
-          </div>
-          <div id="score-circle-element" class="score-circle">
-            <div class="score-inner">
-              <span id="score-value" class="score-val">--</span>
-              <span class="score-lbl">Score</span>
-            </div>
-          </div>
+  <!-- Main Content Wrapper -->
+  <main class="main-wrapper">
+    <div class="content-container">
+      
+      <!-- Page Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="fw-bold mb-1 text-dark">Security Operations Dashboard</h2>
+          <p class="text-muted mb-0">Real-time network security scoring, risk telemetry, and audit management</p>
+        </div>
+        <div>
+          <form id="quick-scan-form" class="d-flex gap-2">
+            <input type="text" id="quick-target" class="form-control" placeholder="Target IP or CIDR Subnet" required>
+            <button type="submit" class="btn btn-cyber-primary text-nowrap">
+              <i class="bi bi-play-fill me-1"></i>Scan
+            </button>
+          </form>
         </div>
       </div>
 
-      <!-- Quick Metrics Cards (3 Cards) -->
-      <div class="col-xl-3 col-md-6">
-        <div class="cyber-card p-4 h-100 d-flex flex-column justify-content-between">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <span class="text-muted text-uppercase fw-semibold small">Total Audits Executed</span>
-            <div class="p-2 rounded-3" style="background: rgba(56, 189, 248, 0.1); color: var(--accent-cyan);">
-              <i class="bi bi-shield-check fs-4"></i>
-            </div>
-          </div>
-          <h2 id="metric-total-audits" class="fw-bold mb-0">0</h2>
-          <div class="mt-2 text-muted small"><i class="bi bi-clock-history me-1"></i> Across all networks</div>
-        </div>
-      </div>
-
-      <div class="col-xl-3 col-md-6">
-        <div class="cyber-card p-4 h-100 d-flex flex-column justify-content-between">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <span class="text-muted text-uppercase fw-semibold small">Discovered Devices</span>
-            <div class="p-2 rounded-3" style="background: rgba(16, 185, 129, 0.1); color: var(--color-safe);">
-              <i class="bi bi-hdd-network fs-4"></i>
-            </div>
-          </div>
-          <div class="d-flex align-items-baseline gap-2">
-            <h2 id="metric-total-devices" class="fw-bold mb-0">0</h2>
-            <span class="text-muted small">(<span id="metric-online-devices" class="text-success">0</span> Online)</span>
-          </div>
-          <div class="mt-2 text-muted small"><i class="bi bi-cpu me-1"></i> Tracked in inventory</div>
-        </div>
-      </div>
-
-      <div class="col-xl-3 col-md-6">
-        <div class="cyber-card p-4 h-100 d-flex flex-column justify-content-between">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <span class="text-muted text-uppercase fw-semibold small">Average Security Score</span>
-            <div class="p-2 rounded-3" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-purple);">
-              <i class="bi bi-graph-up-arrow fs-4"></i>
-            </div>
-          </div>
-          <h2 id="metric-avg-score" class="fw-bold mb-0">0%</h2>
-          <div class="mt-2 text-muted small"><i class="bi bi-bar-chart-line me-1"></i> Network posture index</div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Middle Row: Vulnerability Distribution & Recent Audits -->
-    <div class="row g-4 mb-4">
-
-      <!-- Vulnerability Severity Distribution -->
-      <div class="col-lg-4">
-        <div class="cyber-card p-4 h-100">
-          <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
-            <i class="bi bi-bug-fill text-warning"></i>
-            <span>Vulnerability Distribution</span>
-          </h5>
-          <p class="text-muted small mb-4">Security findings aggregated from latest network audit</p>
-
-          <div class="d-flex flex-column gap-3">
+      <!-- Top Statistics Row (4 Cards) -->
+      <div class="row g-3 mb-4">
+        
+        <!-- Card 1: How many devices exist? -->
+        <div class="col-xl-3 col-md-6">
+          <div class="cyber-card h-100 d-flex flex-column justify-content-between">
             <div>
-              <div class="d-flex justify-content-between small mb-1">
-                <span class="fw-semibold text-rose"><i class="bi bi-exclamation-octagon me-1 text-danger"></i> Critical</span>
-                <span id="count-critical" class="fw-bold">0</span>
-              </div>
-              <div class="progress bg-dark" style="height: 8px;">
-                <div id="bar-critical" class="progress-bar bg-danger" style="width: 0%;"></div>
-              </div>
+              <span class="stat-card-title">Discovered Devices</span>
+              <div class="stat-card-value" id="metric-total-devices">0</div>
             </div>
-
-            <div>
-              <div class="d-flex justify-content-between small mb-1">
-                <span class="fw-semibold" style="color:var(--color-high);"><i class="bi bi-exclamation-triangle me-1"></i> High</span>
-                <span id="count-high" class="fw-bold">0</span>
-              </div>
-              <div class="progress bg-dark" style="height: 8px;">
-                <div id="bar-high" class="progress-bar" style="width: 0%; background-color:var(--color-high);"></div>
-              </div>
-            </div>
-
-            <div>
-              <div class="d-flex justify-content-between small mb-1">
-                <span class="fw-semibold" style="color:var(--color-medium);"><i class="bi bi-info-circle me-1"></i> Medium</span>
-                <span id="count-medium" class="fw-bold">0</span>
-              </div>
-              <div class="progress bg-dark" style="height: 8px;">
-                <div id="bar-medium" class="progress-bar" style="width: 0%; background-color:var(--color-medium);"></div>
-              </div>
-            </div>
-
-            <div>
-              <div class="d-flex justify-content-between small mb-1">
-                <span class="fw-semibold" style="color:var(--color-low);"><i class="bi bi-check-circle me-1"></i> Low</span>
-                <span id="count-low" class="fw-bold">0</span>
-              </div>
-              <div class="progress bg-dark" style="height: 8px;">
-                <div id="bar-low" class="progress-bar" style="width: 0%; background-color:var(--color-low);"></div>
-              </div>
+            <div class="stat-card-desc">
+              <i class="bi bi-hdd-network me-1"></i><span id="metric-online-devices">0</span> hosts currently online
             </div>
           </div>
         </div>
+
+        <!-- Card 2: How many audits have been executed? -->
+        <div class="col-xl-3 col-md-6">
+          <div class="cyber-card h-100 d-flex flex-column justify-content-between">
+            <div>
+              <span class="stat-card-title">Audits Executed</span>
+              <div class="stat-card-value" id="metric-total-audits">0</div>
+            </div>
+            <div class="stat-card-desc">
+              <i class="bi bi-clock-history me-1"></i>Across all target networks
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: What is the average security score? -->
+        <div class="col-xl-3 col-md-6">
+          <div class="cyber-card h-100 d-flex flex-column justify-content-between">
+            <div>
+              <span class="stat-card-title">Average Security Score</span>
+              <div class="stat-card-value" id="metric-avg-score">0%</div>
+            </div>
+            <div class="stat-card-desc">
+              <i class="bi bi-shield-check me-1"></i>Platform-wide posture index
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: How many High/Critical findings exist? -->
+        <div class="col-xl-3 col-md-6">
+          <div class="cyber-card h-100 d-flex flex-column justify-content-between">
+            <div>
+              <span class="stat-card-title">High/Critical Findings</span>
+              <div class="stat-card-value text-danger" id="metric-critical-high">0</div>
+            </div>
+            <div class="stat-card-desc">
+              <i class="bi bi-exclamation-triangle me-1"></i>Require immediate remediation
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Recent Audits Table -->
-      <div class="col-lg-8">
-        <div class="cyber-card p-4 h-100">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
-              <i class="bi bi-clock-history text-info"></i>
-              <span>Recent Audit Runs</span>
+      <!-- Main Dashboard Grid -->
+      <div class="row g-4">
+        
+        <!-- Left Side: Risk Distribution, Security Score Trend -->
+        <div class="col-lg-4">
+          
+          <!-- Risk Distribution Chart (Progress Bars) -->
+          <div class="cyber-card mb-4">
+            <h5 class="fw-bold mb-3 text-dark">
+              <i class="bi bi-bug me-1"></i>Vulnerability Distribution
             </h5>
-            <a href="audits.html" class="btn btn-cyber-outline btn-sm">View All Audits</a>
+            <p class="text-muted small mb-3">Security findings aggregated from the latest network audit</p>
+            
+            <div class="d-flex flex-column gap-3">
+              <div>
+                <div class="d-flex justify-content-between small mb-1">
+                  <span class="fw-semibold text-danger">Critical</span>
+                  <span id="count-critical" class="fw-bold">0</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                  <div id="bar-critical" class="progress-bar bg-danger" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="d-flex justify-content-between small mb-1">
+                  <span class="fw-semibold text-warning">High</span>
+                  <span id="count-high" class="fw-bold">0</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                  <div id="bar-high" class="progress-bar bg-warning" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="d-flex justify-content-between small mb-1">
+                  <span class="fw-semibold text-primary">Medium</span>
+                  <span id="count-medium" class="fw-bold">0</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                  <div id="bar-medium" class="progress-bar bg-primary" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="d-flex justify-content-between small mb-1">
+                  <span class="fw-semibold text-info">Low</span>
+                  <span id="count-low" class="fw-bold">0</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                  <div id="bar-low" class="progress-bar bg-info" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="table-responsive">
-            <table class="table table-cyber align-middle mb-0">
-              <thead>
-                <tr>
-                  <th>Target</th>
-                  <th>Date</th>
-                  <th>Score</th>
-                  <th>Status</th>
-                  <th class="text-end">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="recent-audits-body">
-                <tr>
-                  <td colspan="5" class="text-center text-muted py-4">Loading audit logs...</td>
-                </tr>
-              </tbody>
-            </table>
+          <!-- Security Score Trend (Clean List) -->
+          <div class="cyber-card">
+            <h5 class="fw-bold mb-3 text-dark">
+              <i class="bi bi-graph-up me-1"></i>Security Score Trend
+            </h5>
+            <div id="score-trend-list" class="d-flex flex-column gap-2">
+              <div class="text-muted small py-2 text-center">Loading audit score trend...</div>
+            </div>
           </div>
+
         </div>
+
+        <!-- Right Side: Recent Audits, Most Vulnerable Devices -->
+        <div class="col-lg-8">
+          
+          <!-- Recent Audits Table -->
+          <div class="cyber-card mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-list-task me-1"></i>Recent Security Audits
+              </h5>
+              <a href="audits.html" class="btn btn-cyber-outline btn-sm">View History</a>
+            </div>
+            
+            <div class="table-responsive">
+              <table class="table table-cyber align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Target Network</th>
+                    <th>Audit Date</th>
+                    <th>Security Score</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-audits-body">
+                  <tr>
+                    <td colspan="5" class="text-center text-muted py-4">Loading recent audits...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Most Vulnerable Devices -->
+          <div class="cyber-card">
+            <h5 class="fw-bold mb-3 text-dark">
+              <i class="bi bi-exclamation-circle me-1"></i>Most Vulnerable Devices
+            </h5>
+            <div class="table-responsive">
+              <table class="table table-cyber align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Device IP</th>
+                    <th>Hostname</th>
+                    <th>Operating System</th>
+                    <th>Open Ports</th>
+                    <th>Risk Level</th>
+                  </tr>
+                </thead>
+                <tbody id="vulnerable-devices-body">
+                  <tr>
+                    <td colspan="5" class="text-center text-muted py-3">Loading inventory devices...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
       </div>
 
     </div>
-
   </main>
 
   <!-- Bootstrap Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Page Scripts -->
-  <script type="module" src="js/dashboard.js"></script>
+  <script type="module" src="js/dashboard.js?v=1.0.3"></script>
 </body>
 </html>

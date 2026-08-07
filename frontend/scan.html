@@ -3,114 +3,200 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Run Audit Scan - Cybersecurity Audit Platform</title>
+  <title>Run Audit - Cybersecurity Audit Platform</title>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <!-- Custom Cyber Styling -->
+  <!-- Custom Styling -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- Mount Point for Top Navigation -->
+  <!-- Sidebar & Topbar Mount Point -->
   <div id="navbar-mount"></div>
 
-  <!-- Main Container -->
-  <main class="container-fluid px-lg-4 py-4" style="max-width: 900px;">
+  <!-- Main Content Wrapper -->
+  <main class="main-wrapper">
+    <div class="content-container" style="max-width: 800px; margin: 0 auto;">
+      
+      <!-- Page Header -->
+      <div class="mb-4">
+        <h2 class="fw-bold mb-1 text-dark">Run Network Audit</h2>
+        <p class="text-muted mb-0">Execute a vulnerability scan and discovery audit on a target IP or subnet CIDR range.</p>
+      </div>
 
-    <!-- Header Title -->
-    <div class="text-center mb-4">
-      <h3 class="fw-bold mb-1 d-inline-flex align-items-center gap-2">
-        <i class="bi bi-radar text-info fs-2"></i>
-        <span>Launch Security Audit Scan</span>
-      </h3>
-      <p class="text-muted small">Execute network discovery, port scanning, and risk assessment via Kali Linux audit engine</p>
-    </div>
-
-    <!-- Scan Form Card -->
-    <div class="cyber-card p-4 p-md-5 mb-4">
-      <form id="scan-form">
-
-        <!-- Target Input -->
-        <div class="mb-4">
-          <label class="form-label text-muted small fw-semibold text-uppercase">TARGET SPECIFICATION (IP ADDRESS / SUBNET CIDR)</label>
-          <div class="input-group input-group-lg">
-            <span class="input-group-text bg-dark text-info border-secondary"><i class="bi bi-crosshair"></i></span>
-            <input type="text" id="target-input" class="form-control bg-dark text-white border-secondary" placeholder="e.g. 192.168.56.101 or 192.168.1.0/24" required>
-          </div>
-          <div class="form-text text-muted small mt-1">
-            <i class="bi bi-info-circle me-1"></i> Supports IPv4 addresses, hostnames, and CIDR subnet masks.
-          </div>
-        </div>
-
-        <!-- Scan Presets -->
-        <div class="mb-4">
-          <label class="form-label text-muted small fw-semibold text-uppercase">AUDIT PRESET MODE</label>
-          <div class="row g-3">
-            <div class="col-md-4">
-              <input type="radio" class="btn-check" name="scan-mode" id="mode-full" value="full" checked>
-              <label class="btn btn-cyber-outline w-100 text-start p-3 h-100" for="mode-full">
-                <div class="fw-bold text-white mb-1"><i class="bi bi-shield-lock-fill text-info me-1"></i> Full Network Audit</div>
-                <div class="small text-muted">Complete host discovery, open port enumeration & vulnerability mapping.</div>
-              </label>
+      <!-- Scan Configuration Card -->
+      <div class="cyber-card" id="scan-form-card">
+        <h5 class="fw-bold mb-3 text-dark">Audit Target Specification</h5>
+        <form id="scan-form">
+          
+          <div class="mb-4">
+            <label for="target-input" class="form-label text-muted small fw-semibold text-uppercase">Target Host / Subnet</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-hdd"></i></span>
+              <input type="text" id="target-input" class="form-control" placeholder="e.g. 192.168.1.50 or 192.168.1.0/24" required>
             </div>
-            <div class="col-md-4">
-              <input type="radio" class="btn-check" name="scan-mode" id="mode-quick" value="quick">
-              <label class="btn btn-cyber-outline w-100 text-start p-3 h-100" for="mode-quick">
-                <div class="fw-bold text-white mb-1"><i class="bi bi-lightning-charge-fill text-warning me-1"></i> Quick Discovery</div>
-                <div class="small text-muted">Fast ICMP/ARP host ping sweep to check online inventory.</div>
-              </label>
-            </div>
-            <div class="col-md-4">
-              <input type="radio" class="btn-check" name="scan-mode" id="mode-custom" value="custom">
-              <label class="btn btn-cyber-outline w-100 text-start p-3 h-100" for="mode-custom">
-                <div class="fw-bold text-white mb-1"><i class="bi bi-cpu-fill text-success me-1"></i> Port Deep-Dive</div>
-                <div class="small text-muted">Exhaustive service banner grabbing across top 1000 ports.</div>
-              </label>
+            <div class="form-text text-muted">
+              Supports single IP addresses, CIDR block ranges, or domains.
             </div>
           </div>
+
+          <div class="mb-4">
+            <label class="form-label text-muted small fw-semibold text-uppercase">Audit Profile Preset</label>
+            <div class="row g-3">
+
+              <!-- Full Audit -->
+              <div class="col-md-4">
+                <input type="radio" class="btn-check" name="scan-mode" id="mode-full" value="full" checked>
+                <label class="btn btn-cyber-outline w-100 text-start p-3" for="mode-full">
+                  <span class="fw-bold d-block mb-1 text-dark">
+                    <i class="bi bi-shield-fill-check me-1 text-primary"></i>Full Audit
+                  </span>
+                  <span class="text-muted small d-block" style="font-size:0.75rem;">
+                    <code class="text-muted">nmap -A</code><br>
+                    Deep port scan, service fingerprinting, OS detection, vulnerability analysis &amp; risk scoring.
+                  </span>
+                </label>
+              </div>
+
+              <!-- Host Discovery -->
+              <div class="col-md-4">
+                <input type="radio" class="btn-check" name="scan-mode" id="mode-discovery" value="discovery">
+                <label class="btn btn-cyber-outline w-100 text-start p-3" for="mode-discovery">
+                  <span class="fw-bold d-block mb-1 text-dark">
+                    <i class="bi bi-router me-1 text-success"></i>Host Discovery
+                  </span>
+                  <span class="text-muted small d-block" style="font-size:0.75rem;">
+                    <code class="text-muted">nmap -sn</code><br>
+                    ICMP/ARP ping sweep to find active hosts. Returns IP, MAC, hostname, and vendor only.
+                  </span>
+                </label>
+              </div>
+
+              <!-- Port Sweep -->
+              <div class="col-md-4">
+                <input type="radio" class="btn-check" name="scan-mode" id="mode-ports" value="ports">
+                <label class="btn btn-cyber-outline w-100 text-start p-3" for="mode-ports">
+                  <span class="fw-bold d-block mb-1 text-dark">
+                    <i class="bi bi-diagram-3 me-1 text-warning"></i>Port Sweep
+                  </span>
+                  <span class="text-muted small d-block" style="font-size:0.75rem;">
+                    <code class="text-muted">nmap -sV --open -T4</code><br>
+                    Fast open-port enumeration with service &amp; version banner grabbing. No risk scoring.
+                  </span>
+                </label>
+              </div>
+
+            </div>
+          </div>
+
+          <button type="submit" id="start-scan-btn" class="btn btn-cyber-primary w-100 py-2">
+            <i class="bi bi-play-fill me-1"></i>Execute Audit Scan
+          </button>
+        </form>
+      </div>
+
+      <!-- Active Scan Loading Card (Hidden by default) -->
+      <div class="cyber-card text-center d-none" id="scanning-overlay">
+        <div class="py-4">
+          <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Scanning...</span>
+          </div>
+          <h4 class="fw-bold text-dark mb-2" id="scanning-title">Executing Audit Scan...</h4>
+          <p id="scanning-status-text" class="text-muted mb-3">Initializing Nmap engine &amp; Kali VM</p>
+          <div class="progress bg-light mx-auto" style="max-width: 400px; height: 6px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" style="width: 100%;"></div>
+          </div>
+          <small class="text-muted d-block mt-3">This process may take a few minutes. Do not close this window.</small>
+        </div>
+      </div>
+
+      <!-- Success Card (Hidden by default) -->
+      <div class="cyber-card d-none" id="scan-success-card">
+        <div class="text-center mb-4">
+          <div class="d-inline-flex p-3 bg-success-subtle text-success rounded-circle mb-3" style="font-size: 2rem;">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <h4 class="fw-bold text-dark mb-1">Scan Completed Successfully</h4>
+          <p class="text-muted" id="success-target-text">Results generated.</p>
         </div>
 
-        <!-- Submit Button -->
-        <button type="submit" id="start-scan-btn" class="btn btn-cyber-primary w-100 py-3 fs-5 d-flex align-items-center justify-content-center gap-2">
-          <i class="bi bi-radar"></i>
-          <span>Execute Audit Engine</span>
-        </button>
+        <!-- Summary stats row — slots vary by mode -->
+        <div class="row g-3 mb-4">
 
-      </form>
-    </div>
+          <!-- Mode label — always shown -->
+          <div class="col-md-4">
+            <div class="p-3 bg-light border rounded text-center">
+              <span class="text-muted small d-block fw-semibold text-uppercase">Scan Mode</span>
+              <span class="fs-5 fw-bold d-block text-primary" id="success-mode-label">—</span>
+            </div>
+          </div>
 
-    <!-- Active Radar Scanning State (Hidden by default) -->
-    <div id="scanning-overlay" class="cyber-card p-5 text-center d-none">
-      <div class="radar-container mb-4">
-        <div class="radar-sweep"></div>
-        <i class="bi bi-shield-lock text-info fs-1"></i>
-      </div>
-      <h4 class="fw-bold text-white mb-1">Scanning Target Network...</h4>
-      <p id="scanning-status-text" class="text-info fw-mono mb-3">Initializing Nmap Engine & Vulnerability Analyzer</p>
-      <div class="progress bg-dark mx-auto" style="max-width: 400px; height: 6px;">
-        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" style="width: 100%;"></div>
-      </div>
-      <span class="text-muted small d-block mt-3">This may take up to a few minutes depending on subnet size. Please stay on this page.</span>
-    </div>
+          <!-- Discovered hosts — always shown -->
+          <div class="col-md-4">
+            <div class="p-3 bg-light border rounded text-center">
+              <span class="text-muted small d-block fw-semibold text-uppercase">Discovered Hosts</span>
+              <span class="fs-3 fw-bold d-block text-dark" id="success-hosts-text">0</span>
+            </div>
+          </div>
 
-    <!-- Error Alert Container -->
-    <div id="scan-error-alert" class="alert alert-danger border-0 shadow-lg d-none mt-3">
-      <div class="d-flex align-items-center">
-        <i class="bi bi-exclamation-triangle-fill fs-3 me-3 text-white"></i>
-        <div>
-          <h6 class="fw-bold mb-1">Scan Execution Failed</h6>
-          <span id="scan-error-message">Unable to connect to Kali scan engine.</span>
+          <!-- Security Score — full mode only -->
+          <div class="col-md-4 d-none" id="success-score-box">
+            <div class="p-3 bg-light border rounded text-center">
+              <span class="text-muted small d-block fw-semibold text-uppercase">Security Score</span>
+              <span class="fs-3 fw-bold d-block text-dark" id="success-score-text">—</span>
+            </div>
+          </div>
+
+          <!-- Critical/High risks — full mode only -->
+          <div class="col-md-4 d-none" id="success-vulns-box">
+            <div class="p-3 bg-light border rounded text-center">
+              <span class="text-muted small d-block fw-semibold text-uppercase">Critical / High</span>
+              <span class="fs-3 fw-bold d-block text-danger" id="success-vulns-text">0</span>
+            </div>
+          </div>
+
+          <!-- Open ports total — ports mode only -->
+          <div class="col-md-4 d-none" id="success-ports-box">
+            <div class="p-3 bg-light border rounded text-center">
+              <span class="text-muted small d-block fw-semibold text-uppercase" id="success-ports-label">Open Ports</span>
+              <span class="fs-3 fw-bold d-block text-dark" id="success-ports-text">0</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="d-flex gap-2">
+          <a id="success-view-report" href="#" class="btn btn-cyber-primary flex-grow-1 py-2">
+            <i class="bi bi-file-earmark-text me-1"></i>View Report
+          </a>
+          <a id="success-download-pdf" href="#" class="btn btn-cyber-outline flex-grow-1 py-2">
+            <i class="bi bi-file-earmark-pdf me-1"></i>Download PDF
+          </a>
+          <button id="success-scan-another" class="btn btn-cyber-outline py-2">
+            Scan Another
+          </button>
         </div>
       </div>
-    </div>
 
+      <!-- Scan Error Alert Container -->
+      <div id="scan-error-alert" class="alert alert-danger d-none border-danger-subtle mt-3">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+          <div>
+            <h6 class="fw-bold mb-1">Scan Execution Error</h6>
+            <span id="scan-error-message">Unable to contact the Kali Linux scan engine service.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </main>
 
   <!-- Bootstrap Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Page Scripts -->
-  <script type="module" src="js/scan.js"></script>
+  <script type="module" src="js/scan.js?v=1.0.3"></script>
 </body>
 </html>

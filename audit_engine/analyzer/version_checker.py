@@ -5,27 +5,43 @@ from models.finding import Finding
 
 
 def extract_version(version_string):
-
-    if version_string is None:
+    """
+    Extract clean numeric dot-separated version string.
+    e.g. 'OpenSSH 9.3p2 Ubuntu' -> '9.3.2'
+    """
+    if not version_string:
         return None
 
-    match = re.search(r"\d+(\.\d+)+", version_string)
-
+    # Find the main numbers and dots
+    match = re.search(r"\d+(\.\d+)*", str(version_string))
     if match:
         return match.group()
 
     return None
 
 
+def parse_version_parts(v_str):
+    """
+    Convert a version string into a tuple of integers.
+    e.g. '9.3p2' -> [9, 3, 2]
+    """
+    if not v_str:
+        return []
+
+    # Extract all digit sequences from the string
+    numbers = re.findall(r"\d+", str(v_str))
+    return [int(n) for n in numbers]
+
+
 def compare_versions(installed, minimum):
+    """
+    Returns True if installed version is strictly LESS than minimum version.
+    """
+    installed_parts = parse_version_parts(installed)
+    minimum_parts = parse_version_parts(minimum)
 
-    installed = extract_version(installed)
-
-    if installed is None:
+    if not installed_parts or not minimum_parts:
         return False
-
-    installed_parts = [int(x) for x in installed.split(".")]
-    minimum_parts = [int(x) for x in minimum.split(".")]
 
     length = max(len(installed_parts), len(minimum_parts))
 
@@ -38,19 +54,19 @@ def compare_versions(installed, minimum):
 def check_versions(device):
     findings = []
     rules = load_version_rules()
-    
+
     for port in device.ports:
-        
+
         if port.product is None:
             continue
-            
+
         product = port.product.lower()
-        
+
         if product not in rules:
             continue
 
         rule = rules[product]
-        
+
         if compare_versions(
             port.version,
             rule["minimum_version"]
@@ -64,7 +80,8 @@ def check_versions(device):
                     severity=rule["severity"],
                     description=rule["description"],
                     recommendation=rule["recommendation"],
-                    points=rule["points"]
+                    points=rule["points"],
+                    source="version",
                 )
             )
 

@@ -9,10 +9,15 @@ from audits.api_client import ScanEngineError
 from inventory.models import Device
 
 
+from accounts.models import User
+
+
 class AuditEndpointsTestCase(TestCase):
 
     def setUp(self):
+        self.user = User.objects.create_user(username="testauditor", role="auditor", password="password123")
         self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
         self.audit = Audit.objects.create(
             target="192.168.1.0/24",
             scan_date=timezone.now(),

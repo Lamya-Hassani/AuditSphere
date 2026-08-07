@@ -8,64 +8,112 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <!-- Custom Cyber Styling -->
+  <!-- Custom Styling -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- Mount Point for Top Navigation -->
+  <!-- Sidebar & Topbar Mount Point -->
   <div id="navbar-mount"></div>
 
-  <!-- Main Container -->
-  <main class="container-fluid px-lg-4 py-4">
-
-    <!-- Header Title & Action -->
-    <div class="row align-items-center mb-4">
-      <div class="col-md-7">
-        <h3 class="fw-bold mb-1 d-flex align-items-center gap-2">
-          <i class="bi bi-shield-check text-info"></i>
-          <span>Security Audit History</span>
-        </h3>
-        <p class="text-muted small mb-0">Chronological repository of all network vulnerability audits and execution logs</p>
+  <!-- Main Content Wrapper -->
+  <main class="main-wrapper">
+    <div class="content-container">
+      
+      <!-- Page Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="fw-bold mb-1 text-dark">Security Audit History</h2>
+          <p class="text-muted mb-0">Chronological repository of all vulnerability audits and executed scan records.</p>
+        </div>
+        <div>
+          <a href="scan.html" class="btn btn-cyber-primary">
+            <i class="bi bi-plus-circle me-1"></i>New Audit
+          </a>
+        </div>
       </div>
 
-      <div class="col-md-5 mt-3 mt-md-0 text-md-end">
-        <a href="scan.html" class="btn btn-cyber-primary d-inline-flex align-items-center gap-2">
-          <i class="bi bi-plus-circle"></i> Launch New Scan
-        </a>
+      <!-- Filter, Search, and Action Bar -->
+      <div class="cyber-card p-3 mb-4">
+        <div class="row g-3">
+          <!-- Search input -->
+          <div class="col-md-8">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <input type="text" id="audit-search" class="form-control" placeholder="Search by target network or IP address...">
+              <button id="clear-search-btn" class="btn btn-cyber-outline"><i class="bi bi-x-lg"></i></button>
+            </div>
+          </div>
+          <!-- Quick summary count info -->
+          <div class="col-md-4 d-flex align-items-center justify-content-md-end text-muted small">
+            Total Logs: <span id="audit-total-count" class="fw-bold text-dark ms-1">0</span>
+          </div>
+        </div>
       </div>
+
+      <!-- Audits Table Card -->
+      <div class="cyber-card p-0">
+        <div class="table-responsive">
+          <table class="table table-cyber align-middle mb-0">
+            <thead>
+              <tr>
+                <th style="cursor: pointer;" id="sort-date">
+                  Date <i class="bi bi-arrow-down-up ms-1 text-muted" id="sort-icon-date"></i>
+                </th>
+                <th style="cursor: pointer;" id="sort-target">
+                  Target <i class="bi bi-arrow-down-up ms-1 text-muted" id="sort-icon-target"></i>
+                </th>
+                <th style="cursor: pointer;" id="sort-devices">
+                  Devices <i class="bi bi-arrow-down-up ms-1 text-muted" id="sort-icon-devices"></i>
+                </th>
+                <th style="cursor: pointer;" id="sort-score">
+                  Security Score <i class="bi bi-arrow-down-up ms-1 text-muted" id="sort-icon-score"></i>
+                </th>
+                <th>Risk Level</th>
+                <th>Status</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="audits-tbody">
+              <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                  <div class="spinner-border spinner-border-sm text-primary me-2"></div> Loading audit history...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Table Pagination Footer -->
+        <div class="d-flex justify-content-between align-items-center p-3 border-top bg-light">
+          <div class="small text-muted" id="pagination-info">
+            Showing 1-10 of 100 entries
+          </div>
+          <nav>
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item" id="page-prev">
+                <a class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              <!-- Rendered dynamic page numbers -->
+              <li class="page-item"><a class="page-link active" href="#">1</a></li>
+              <li class="page-item" id="page-next">
+                <a class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
     </div>
-
-    <!-- Audits Table Card -->
-    <div class="cyber-card p-4">
-      <div class="table-responsive">
-        <table class="table table-cyber align-middle mb-0">
-          <thead>
-            <tr>
-              <th>Audit ID</th>
-              <th>Target Subnet / IP</th>
-              <th>Scan Date</th>
-              <th>Scan Type</th>
-              <th>Security Score</th>
-              <th>Executed By</th>
-              <th>Status</th>
-              <th class="text-end">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="audits-tbody">
-            <tr>
-              <td colspan="8" class="text-center text-muted py-4">Loading audit logs...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
   </main>
 
   <!-- Bootstrap Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Page Scripts -->
-  <script type="module" src="js/audits.js"></script>
+  <script type="module" src="js/audits.js?v=1.0.3"></script>
 </body>
 </html>

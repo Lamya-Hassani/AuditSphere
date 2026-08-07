@@ -9,15 +9,22 @@ class ScanEngineError(Exception):
 KALI_API = "http://192.168.56.101:8000"
 
 
-def run_scan(target):
+def run_scan(target, mode="full", previous_report=None):
     """
-    Triggers a network scan on the Kali Linux API for the given target.
+    Triggers a network scan on the Kali Linux API.
+    Sends a JSON body with target, mode, and optional previous_report.
     Returns the report dictionary on success or raises ScanEngineError.
     """
+    payload = {
+        "target": target,
+        "mode": mode,
+        "previous_report": previous_report,  # None is serialised as null → ignored by engine
+    }
+
     try:
         response = requests.post(
             f"{KALI_API}/scan",
-            params={"target": target},
+            json=payload,
             timeout=900
         )
         if not response.ok:

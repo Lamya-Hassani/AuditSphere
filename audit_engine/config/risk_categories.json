@@ -1,28 +1,10 @@
 {
-    "Legacy Protocols": [
-        "ftp",
-        "telnet"
-    ],
-
-    "Remote Access": [
-        "ssh",
-        "ms-wbt-server"
-    ],
-
-    "Web Services": [
-        "http",
-        "https"
-    ],
-
-    "File Sharing": [
-        "microsoft-ds"
-    ],
-
-    "Mail Services": [
-        "smtp"
-    ],
-
-    "Infrastructure": [
-        "domain"
-    ]
+    "Legacy Protocols": ["telnet", "ftp", "rsh", "rlogin", "tftp", "finger"],
+    "Remote Access": ["ssh", "ms-wbt-server", "vnc", "teamviewer"],
+    "Web Services": ["http", "https", "http-proxy", "http-alt"],
+    "File Services": ["microsoft-ds", "netbios-ssn", "nfs", "ftp"],
+    "Database Services": ["mysql", "ms-sql-s", "oracle", "postgresql", "mongodb"],
+    "Mail Services": ["smtp", "pop3", "imap"],
+    "Network Services": ["domain", "snmp", "ntp", "dhcp"],
+    "Known CVEs": ["ftp", "ssh", "http", "https", "microsoft-ds", "mysql", "smtp", "snmp"]
 }

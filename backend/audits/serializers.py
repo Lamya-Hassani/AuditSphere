@@ -7,6 +7,7 @@ from .models import (
     Finding,
     Recommendation,
 )
+from inventory.models import Port
 
 
 class RecommendationSerializer(serializers.ModelSerializer):
@@ -23,18 +24,35 @@ class FindingSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class AuditPortSerializer(serializers.ModelSerializer):
+    """Inline port records attached to an AuditDevice."""
+
+    class Meta:
+        model = Port
+        fields = ["number", "protocol", "state", "service", "product", "version"]
+
+
 class AuditDeviceSerializer(serializers.ModelSerializer):
 
-    device_ip = serializers.CharField(source="device.ip", read_only=True)
-    device_hostname = serializers.CharField(source="device.hostname", read_only=True)
-    findings = FindingSerializer(
-        many=True,
-        read_only=True
-    )
+    device_ip       = serializers.CharField(source="device.ip",               read_only=True)
+    device_hostname = serializers.CharField(source="device.hostname",          read_only=True)
+    device_mac      = serializers.CharField(source="device.mac",               read_only=True)
+    device_vendor   = serializers.CharField(source="device.vendor",            read_only=True)
+    device_os       = serializers.CharField(source="device.operating_system",  read_only=True)
+
+    # Open ports stored against the inventory Device
+    ports = serializers.SerializerMethodField()
+
+    findings = FindingSerializer(many=True, read_only=True)
 
     class Meta:
         model = AuditDevice
         fields = "__all__"
+
+    def get_ports(self, obj):
+        """Return all ports on the linked inventory device."""
+        qs = obj.device.ports.all()
+        return AuditPortSerializer(qs, many=True).data
 
 
 class AuditStatisticSerializer(serializers.ModelSerializer):

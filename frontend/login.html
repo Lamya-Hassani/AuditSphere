@@ -3,70 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Cybersecurity Audit Platform</title>
+  <title>Login - AuditSphere</title>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <!-- Custom Cyber Styling -->
+  <!-- Custom Styling -->
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="d-flex align-items-center justify-content-center min-vh-100 p-3">
+<body class="d-flex align-items-center justify-content-center min-vh-100 p-3 bg-light">
 
   <div class="container" style="max-width: 440px;">
+    
+    <!-- Platform Branding -->
     <div class="text-center mb-4">
-      <div class="d-inline-flex align-items-center justify-content-center mb-2" style="width:64px; height:64px; border-radius:18px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3);">
-        <i class="bi bi-shield-lock-fill brand-glow fs-1"></i>
+      <div class="d-inline-flex align-items-center justify-content-center mb-2" style="width:56px; height:56px; border-radius:8px; background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(37, 99, 235, 0.2);">
+        <i class="bi bi-shield-lock-fill text-primary fs-2"></i>
       </div>
-      <h3 class="fw-bold mb-1">CYBER<span class="brand-glow">AUDIT</span></h3>
-      <p class="text-muted small">Enterprise Security Intelligence & Compliance</p>
+      <h3 class="fw-bold mb-1 text-dark">AuditSphere</h3>
+      <p class="text-muted small mb-0">Professional Cybersecurity Audit Platform</p>
     </div>
 
+    <!-- Login Card matching application styling -->
     <div class="cyber-card p-4 p-md-5">
-      <h5 class="fw-bold mb-3 text-center">Sign In to Dashboard</h5>
+      <h5 class="fw-bold mb-3 text-center text-dark">Sign In to Dashboard</h5>
+
+      <!-- Validation Errors Alert Container -->
+      <div id="error-alert" class="alert alert-danger d-none mb-3 py-2 px-3 small" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span id="error-message">Invalid credentials provided.</span>
+      </div>
 
       <form id="login-form">
+        <!-- Username / Email Field -->
         <div class="mb-3">
-          <label class="form-label text-muted small fw-semibold">USERNAME</label>
+          <label for="username" class="form-label text-muted small fw-semibold">USERNAME OR EMAIL</label>
           <div class="input-group">
-            <span class="input-group-text bg-dark text-muted border-secondary"><i class="bi bi-person"></i></span>
-            <input type="text" id="username" class="form-control bg-dark text-white border-secondary" placeholder="e.g. auditor_alex" required value="admin_user">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input 
+              type="text" 
+              id="username" 
+              class="form-control" 
+              placeholder="e.g. admin or auditor" 
+              required 
+              autocomplete="username"
+              value="admin"
+            >
           </div>
         </div>
 
+        <!-- Password Field -->
         <div class="mb-3">
-          <label class="form-label text-muted small fw-semibold">PASSWORD</label>
+          <label for="password" class="form-label text-muted small fw-semibold">PASSWORD</label>
           <div class="input-group">
-            <span class="input-group-text bg-dark text-muted border-secondary"><i class="bi bi-key"></i></span>
-            <input type="password" id="password" class="form-control bg-dark text-white border-secondary" placeholder="••••••••" required value="password123">
+            <span class="input-group-text"><i class="bi bi-key"></i></span>
+            <input 
+              type="password" 
+              id="password" 
+              class="form-control" 
+              placeholder="••••••••" 
+              required 
+              autocomplete="current-password"
+              value="admin123"
+            >
           </div>
         </div>
 
-        <div class="mb-4">
-          <label class="form-label text-muted small fw-semibold">ROLE ACCESS</label>
-          <select id="role" class="form-select bg-dark text-white border-secondary">
-            <option value="admin" selected>Administrator (Full System Control)</option>
-            <option value="auditor">Auditor (Security Analyst)</option>
-          </select>
+        <!-- Remember Me Checkbox -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="form-check">
+            <input type="checkbox" id="remember-me" class="form-check-input" checked>
+            <label for="remember-me" class="form-check-label text-muted small">Remember session token</label>
+          </div>
         </div>
 
-        <button type="submit" class="btn btn-cyber-primary w-100 py-2.5 mb-3 d-flex align-items-center justify-content-center gap-2">
+        <!-- Submit Button -->
+        <button type="submit" id="submit-btn" class="btn btn-cyber-primary w-100 py-2.5 mb-3 d-flex align-items-center justify-content-center gap-2">
           <span>Authenticate Session</span>
           <i class="bi bi-arrow-right-short fs-5"></i>
         </button>
       </form>
 
-      <div class="mt-3 pt-3 border-top border-secondary text-center">
+      <!-- Quick Demo Accounts -->
+      <div class="mt-3 pt-3 border-top text-center">
         <span class="text-muted small d-block mb-2">QUICK DEMO ACCOUNTS</span>
         <div class="d-flex gap-2 justify-content-center">
-          <button id="demo-admin" class="btn btn-cyber-outline btn-sm">Admin Demo</button>
-          <button id="demo-auditor" class="btn btn-cyber-outline btn-sm">Auditor Demo</button>
+          <button id="demo-super" type="button" class="btn btn-cyber-outline btn-sm">Super Admin</button>
+          <button id="demo-admin" type="button" class="btn btn-cyber-outline btn-sm">Admin</button>
+          <button id="demo-auditor" type="button" class="btn btn-cyber-outline btn-sm">Auditor</button>
         </div>
       </div>
     </div>
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script type="module" src="js/login.js"></script>
+  <script type="module" src="js/login.js?v=1.0.3"></script>
 </body>
 </html>
+

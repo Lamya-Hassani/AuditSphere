@@ -1,9 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
+from accounts.permissions import IsAuditorOrAdmin, IsAdminUserRole
 from .models import Device
 from .serializers import DeviceSerializer, DeviceDetailSerializer
 
@@ -15,6 +17,7 @@ class DeviceListView(APIView):
       - ?search=<query> (searches ip, hostname, vendor, operating_system)
       - ?status=<status> (filters by status: up, down, unknown)
     """
+    permission_classes = [IsAuthenticated, IsAuditorOrAdmin]
 
     def get(self, request):
         queryset = Device.objects.all().prefetch_related("ports").order_by("ip")
@@ -42,8 +45,9 @@ class DeviceDetailView(APIView):
     Retrieve detail of a single device including open ports and recent findings.
 
     DELETE /api/inventory/devices/<pk>/
-    Delete a device from inventory.
+    Delete a device from inventory (Administrator or Super Admin only).
     """
+    permission_classes = [IsAuthenticated, IsAuditorOrAdmin]
 
     def get(self, request, pk):
         device = get_object_or_404(
@@ -54,6 +58,11 @@ class DeviceDetailView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
+        if not (request.user.role == "admin" or request.user.is_superuser):
+            return Response(
+                {"detail": "You do not have permission to delete inventory devices."},
+                status=status.HTTP_403_FORBIDDEN
+            )
         device = get_object_or_404(Device, pk=pk)
         device.delete()
         return Response(

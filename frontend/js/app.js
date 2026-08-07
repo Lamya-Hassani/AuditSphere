@@ -1,151 +1,250 @@
 /**
- * Global App Helpers & Component Renderer
+ * AuditSphere - Global App Helpers & Component Renderer
  */
+import { getAccessToken, clearTokens } from './api.js?v=1.0.3';
 
-// User Session Management
-export function getCurrentUser() {
-  const user = localStorage.getItem('cyber_user');
-  if (user) {
-    try {
-      return JSON.parse(user);
-    } catch (e) {
-      return { username: 'Auditor', role: 'auditor' };
-    }
+// ---------------------------------------------------------------------------
+// Auth Guard
+// ---------------------------------------------------------------------------
+export function requireAuth() {
+  const isLoginPage = window.location.pathname.endsWith('login.html');
+  const token = getAccessToken();
+
+  if (!token && !isLoginPage) {
+    window.location.href = 'login.html';
+    return false;
   }
-  return { username: 'Admin', role: 'admin' };
+  if (token && isLoginPage) {
+    window.location.href = 'index.html';
+    return false;
+  }
+  return true;
+}
+
+requireAuth();
+
+// ---------------------------------------------------------------------------
+// User Session
+// ---------------------------------------------------------------------------
+export function getCurrentUser() {
+  const raw = localStorage.getItem('cyber_user') || sessionStorage.getItem('cyber_user');
+  if (raw) {
+    try { return JSON.parse(raw); } catch { /* fall through */ }
+  }
+  return { username: 'Admin', role: 'admin', is_superuser: false };
 }
 
 export function setCurrentUser(user) {
-  localStorage.setItem('cyber_user', JSON.stringify(user));
+  const storage = localStorage.getItem('access_token') ? localStorage : sessionStorage;
+  storage.setItem('cyber_user', JSON.stringify(user));
 }
 
-export function logoutUser() {
-  localStorage.removeItem('cyber_user');
-  window.location.href = 'login.html';
+export async function logoutUser() {
+  try {
+    const refresh = localStorage.getItem('refresh_token') || sessionStorage.getItem('refresh_token');
+    if (refresh) {
+      await fetch('http://localhost:8000/api/accounts/logout/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh })
+      });
+    }
+  } catch { /* ignore network errors on logout */ }
+  clearTokens();
+  navigateTo('login.html');
 }
 
-// Format ISO date
-export function formatDate(isoString) {
-  if (!isoString) return 'N/A';
-  const date = new Date(isoString);
-  return date.toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+// ---------------------------------------------------------------------------
+// Navigation with smooth fade transition
+// ---------------------------------------------------------------------------
+export function navigateTo(url) {
+  document.body.classList.add('page-exit');
+  setTimeout(() => { window.location.href = url; }, 180);
+}
+
+// Intercept all nav-item-link clicks for smooth transition
+function attachNavTransitions() {
+  document.querySelectorAll('a.nav-item-link, a[data-nav]').forEach(link => {
+    link.addEventListener('click', e => {
+      const href = link.getAttribute('href');
+      if (href && !href.startsWith('#') && !href.startsWith('http')) {
+        e.preventDefault();
+        navigateTo(href);
+      }
+    });
   });
 }
 
-// Get Badge Class for Vulnerability Severity
+// ---------------------------------------------------------------------------
+// Utility
+// ---------------------------------------------------------------------------
+export function formatDate(isoString) {
+  if (!isoString) return 'N/A';
+  return new Date(isoString).toLocaleString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
 export function getSeverityBadgeClass(severity) {
-  const sev = (severity || '').toLowerCase();
-  switch (sev) {
+  switch ((severity || '').toLowerCase()) {
     case 'critical': return 'bg-critical';
-    case 'high': return 'bg-high';
-    case 'medium': return 'bg-medium';
-    case 'low': return 'bg-low';
-    default: return 'bg-safe';
+    case 'high':     return 'bg-high';
+    case 'medium':   return 'bg-medium';
+    case 'low':      return 'bg-low';
+    default:         return 'bg-safe';
   }
 }
 
+// ---------------------------------------------------------------------------
 // Toast Notifications
+// ---------------------------------------------------------------------------
 export function showToast(message, type = 'info') {
-  let toastContainer = document.getElementById('toast-container');
-  if (!toastContainer) {
-    toastContainer = document.createElement('div');
-    toastContainer.id = 'toast-container';
-    toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
-    toastContainer.style.zIndex = '9999';
-    document.body.appendChild(toastContainer);
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'position-fixed bottom-0 end-0 p-3';
+    container.style.zIndex = '9999';
+    document.body.appendChild(container);
   }
 
-  const bgClass = type === 'danger' ? 'bg-danger' : type === 'success' ? 'bg-success' : 'bg-primary';
-  const toastId = 'toast-' + Date.now();
+  const iconMap   = { success: 'bi-check-circle-fill', danger: 'bi-exclamation-triangle-fill', warning: 'bi-exclamation-circle-fill', info: 'bi-info-circle-fill' };
+  const colorMap  = { success: '#10b981', danger: '#ef4444', warning: '#f59e0b', info: '#2563eb' };
+  const id        = `toast-${Date.now()}`;
+  const color     = colorMap[type] || colorMap.info;
+  const icon      = iconMap[type]  || iconMap.info;
 
-  const toastHtml = `
-    <div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0 show" role="alert">
-      <div class="d-flex">
-        <div class="toast-body">
-          <i class="bi ${type === 'success' ? 'bi-check-circle' : type === 'danger' ? 'bi-exclamation-triangle' : 'bi-info-circle'} me-2"></i>
-          ${message}
-        </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-      </div>
+  container.insertAdjacentHTML('beforeend', `
+    <div id="${id}" class="toast-item" role="alert" style="border-left: 4px solid ${color};">
+      <i class="bi ${icon} me-2" style="color:${color};"></i>
+      <span class="flex-grow-1">${message}</span>
+      <button class="toast-close" onclick="this.closest('.toast-item').remove()">&times;</button>
     </div>
-  `;
+  `);
 
-  toastContainer.insertAdjacentHTML('beforeend', toastHtml);
-  setTimeout(() => {
-    const el = document.getElementById(toastId);
-    if (el) el.remove();
-  }, 4000);
+  setTimeout(() => document.getElementById(id)?.remove(), 5000);
 }
 
-// Render Top Navbar
+// Confirmation dialog (returns Promise<boolean>)
+export function showConfirm(message) {
+  return new Promise(resolve => {
+    const id = `confirm-${Date.now()}`;
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="confirm-overlay" id="${id}">
+        <div class="confirm-box">
+          <p class="confirm-msg">${message}</p>
+          <div class="confirm-actions">
+            <button class="btn btn-cyber-outline" id="${id}-cancel">Cancel</button>
+            <button class="btn btn-cyber-danger" id="${id}-ok">Confirm</button>
+          </div>
+        </div>
+      </div>
+    `);
+    document.getElementById(`${id}-cancel`).onclick = () => { document.getElementById(id)?.remove(); resolve(false); };
+    document.getElementById(`${id}-ok`).onclick    = () => { document.getElementById(id)?.remove(); resolve(true);  };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Sidebar & Topbar Renderer
+// ---------------------------------------------------------------------------
 export function renderNavbar(activePage = 'dashboard') {
   const navContainer = document.getElementById('navbar-mount');
   if (!navContainer) return;
 
   const user = getCurrentUser();
+  const isSuperAdmin = user.is_superuser === true;
+  const isAdmin      = user.role === 'admin' || isSuperAdmin;
+
+  // Show user management link only to admins/superadmins
+  const usersLink = isAdmin ? `
+    <a href="settings.html" class="nav-item-link ${activePage === 'settings' ? 'active' : ''}">
+      <i class="bi bi-people-fill"></i>
+      <span>User Management</span>
+    </a>` : '';
+
+  // Super-admin badge
+  const roleBadge = isSuperAdmin
+    ? `<span class="user-role d-block text-uppercase" style="color:#f59e0b;">Super Admin</span>`
+    : `<span class="user-role d-block text-uppercase">${user.role || 'Auditor'}</span>`;
 
   navContainer.innerHTML = `
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-cyber">
-      <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center" href="index.html">
-          <i class="bi bi-shield-lock-fill brand-glow me-2 fs-4"></i>
-          CYBER<span class="brand-glow">AUDIT</span>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-            <li class="nav-item">
-              <a class="nav-link ${activePage === 'dashboard' ? 'active' : ''}" href="index.html">
-                <i class="bi bi-grid-1x2-fill me-1"></i> Dashboard
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link ${activePage === 'inventory' ? 'active' : ''}" href="inventory.html">
-                <i class="bi bi-hdd-network-fill me-1"></i> Inventory
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link ${activePage === 'audits' ? 'active' : ''}" href="audits.html">
-                <i class="bi bi-shield-check me-1"></i> Audit History
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link ${activePage === 'scan' ? 'active' : ''}" href="scan.html">
-                <i class="bi bi-radar me-1"></i> Run Scan
-              </a>
-            </li>
-          </ul>
-          <div class="d-flex align-items-center gap-3">
-            <a href="scan.html" class="btn btn-cyber-primary btn-sm d-none d-md-inline-flex align-items-center gap-1">
-              <i class="bi bi-plus-lg"></i> New Audit
-            </a>
-            <div class="dropdown">
-              <button class="btn btn-cyber-outline btn-sm dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
-                <i class="bi bi-person-circle fs-6"></i>
-                <span>${user.username}</span>
-                <span class="badge bg-secondary rounded-pill">${user.role}</span>
-              </button>
-              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow-lg" style="background:#0f172a; border:1px solid rgba(255,255,255,0.1);">
-                <li><a class="dropdown-item text-muted" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
-                <li><hr class="dropdown-divider border-secondary"></li>
-                <li><a class="dropdown-item text-danger" id="logout-btn" href="#"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+    <!-- Left Sidebar -->
+    <aside class="sidebar" id="sidebar-menu">
+      <div class="brand">
+        <i class="bi bi-shield-lock-fill me-2"></i>AuditSphere
       </div>
-    </nav>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-item-link ${activePage === 'dashboard' ? 'active' : ''}">
+          <i class="bi bi-grid-fill"></i><span>Dashboard</span>
+        </a>
+        <a href="scan.html" class="nav-item-link ${activePage === 'scan' ? 'active' : ''}">
+          <i class="bi bi-play-circle-fill"></i><span>Run Audit</span>
+        </a>
+        <a href="audits.html" class="nav-item-link ${activePage === 'audits' ? 'active' : ''}">
+          <i class="bi bi-shield-check"></i><span>Audit History</span>
+        </a>
+        <a href="inventory.html" class="nav-item-link ${activePage === 'inventory' ? 'active' : ''}">
+          <i class="bi bi-hdd-network-fill"></i><span>Inventory</span>
+        </a>
+        <a href="reports.html" class="nav-item-link ${activePage === 'reports' ? 'active' : ''}">
+          <i class="bi bi-file-earmark-text-fill"></i><span>Reports</span>
+        </a>
+        ${usersLink}
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <span>AuditSphere v1.0</span>
+        <span>Blueprint · EMSI 2026</span>
+      </div>
+    </aside>
+
+    <!-- Top Navbar -->
+    <header class="top-navbar">
+      <div class="d-flex align-items-center">
+        <button class="sidebar-toggle" id="sidebar-toggle-btn">
+          <i class="bi bi-list"></i>
+        </button>
+        <h5 class="project-title">AuditSphere — Professional Cybersecurity Audit Platform</h5>
+      </div>
+      <div class="user-info">
+        <div class="user-details d-none d-sm-block">
+          <span class="user-name d-block">${user.username || 'Administrator'}</span>
+          ${roleBadge}
+        </div>
+        <button class="btn btn-cyber-outline btn-sm" id="logout-btn">
+          <i class="bi bi-box-arrow-right me-1"></i>Logout
+        </button>
+      </div>
+    </header>
   `;
 
-  document.getElementById('logout-btn')?.addEventListener('click', (e) => {
+  // Page fade-in on load
+  document.body.classList.add('page-enter');
+
+  // Sidebar toggle
+  const toggleBtn = document.getElementById('sidebar-toggle-btn');
+  const sidebar   = document.getElementById('sidebar-menu');
+  if (toggleBtn && sidebar) {
+    toggleBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      sidebar.classList.toggle('show');
+    });
+    document.addEventListener('click', e => {
+      if (sidebar.classList.contains('show') && !sidebar.contains(e.target) && e.target !== toggleBtn) {
+        sidebar.classList.remove('show');
+      }
+    });
+  }
+
+  // Logout
+  document.getElementById('logout-btn')?.addEventListener('click', e => {
     e.preventDefault();
     logoutUser();
   });
+
+  // Smooth nav transitions
+  attachNavTransitions();
 }

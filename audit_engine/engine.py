@@ -5,15 +5,18 @@ import shutil
 
 from pathlib import Path
 
-from scanner.discovery import discover_hosts
+from scanner.discovery import discover_hosts, discover_hosts_detailed
 from scanner.detailed_scan import run_detailed_scan
+from scanner.port_sweep import run_port_sweep
 from scanner.parser import parse_scan
 
 from analyzer.analyzer import analyze
+from comparator.compare import compare_audits
 from exporter.json_exporter import report_to_dict
 from inventory.inventory_manager import update_inventory
 from logger.logger import logger
 from models.laboratory_report import LaboratoryReport
+from models.scan_result import ScanResult
 from config.config_loader import load_config
 
 
@@ -21,26 +24,154 @@ def cleanup():
 
     config = load_config()
 
-    if config["engine"]["keep_scan_files"]:
+    if config["engine"].get("keep_temp_files", True):
         return
 
     temp_folder = Path(
-        config["engine"]["scan_directory"]
+        config["engine"].get("scan_directory", "temp")
     )
 
     if temp_folder.exists():
         shutil.rmtree(temp_folder)
 
 
-def run_audit(target):
+# ---------------------------------------------------------------------------
+# MODE: Host Discovery
+# Nmap command: nmap -sn <target>
+# Returns: list of discovered hosts with IP, hostname, MAC, vendor, status
+# No port scanning, no analysis, no risk scoring
+# ---------------------------------------------------------------------------
 
-    start_time = datetime.now()
+def run_discovery_audit(target, start_time):
 
-    logger.info("Audit Engine Started")
-    logger.info(f"Target: {target}")
+    logger.info("Mode: Host Discovery (nmap -sn)")
+
+    hosts = discover_hosts_detailed(target)
+
+    logger.info(f"{len(hosts)} active hosts discovered")
+
+    end_time = datetime.now()
+    duration = (end_time - start_time).total_seconds()
+
+    metadata = {
+        "engine": "Cybersecurity Audit Engine",
+        "engine_version": "1.0.0",
+        "rules_version": "2026.1",
+        "scan_type": "Host Discovery",
+        "nmap_command": "nmap -sn <target>",
+        "generated_at": end_time.strftime("%Y-%m-%d %H:%M:%S"),
+        "scan_duration": f"{duration:.2f} seconds",
+        "scanner": "Nmap 7.99",
+        "parser": "Internal XML Parser",
+        "target": target,
+        "status": "Completed",
+        "total_devices": len(hosts)
+    }
+
+    cleanup()
+
+    return {
+        "scan_mode": "discovery",
+        "devices": hosts,
+        "metadata": metadata,
+        "scan_date": end_time.strftime("%Y-%m-%d %H:%M:%S"),
+        "target": target,
+        "engine_version": "1.0.0"
+    }
+
+
+# ---------------------------------------------------------------------------
+# MODE: Port Sweep
+# Nmap command: nmap -sV --open -T4 <host>  (per discovered host)
+# Returns: list of devices with their open ports and service info
+# No OS detection, no scripts, no risk analysis
+# ---------------------------------------------------------------------------
+
+def run_port_sweep_audit(target, start_time):
+
+    logger.info("Mode: Port Sweep (nmap -sV --open -T4)")
+
+    active_hosts = discover_hosts(target)
+    logger.info(f"{len(active_hosts)} active hosts discovered")
+
+    devices_dict = []
+
+    for host in active_hosts:
+        logger.info(f"Port sweeping {host}")
+
+        xml_file = run_port_sweep(host)
+        devices = parse_scan(xml_file)
+
+        if not devices:
+            continue
+
+        device = devices[0]
+
+        ports_data = [
+            {
+                "number": p.number,
+                "protocol": p.protocol,
+                "state": p.state,
+                "service": p.service,
+                "product": p.product,
+                "version": p.version
+            }
+            for p in device.ports
+        ]
+
+        devices_dict.append({
+            "ip": device.ip,
+            "hostname": device.hostname,
+            "mac": device.mac,
+            "vendor": device.vendor,
+            "status": device.status,
+            "os": device.os,
+            "ports": ports_data
+        })
+
+    end_time = datetime.now()
+    duration = (end_time - start_time).total_seconds()
+    total_open_ports = sum(len(d["ports"]) for d in devices_dict)
+
+    metadata = {
+        "engine": "Cybersecurity Audit Engine",
+        "engine_version": "1.0.0",
+        "rules_version": "2026.1",
+        "scan_type": "Port Sweep",
+        "nmap_command": "nmap -sV --open -T4 <host>",
+        "generated_at": end_time.strftime("%Y-%m-%d %H:%M:%S"),
+        "scan_duration": f"{duration:.2f} seconds",
+        "scanner": "Nmap 7.99",
+        "parser": "Internal XML Parser",
+        "target": target,
+        "status": "Completed",
+        "total_devices": len(devices_dict),
+        "open_ports": total_open_ports
+    }
+
+    cleanup()
+
+    return {
+        "scan_mode": "ports",
+        "devices": devices_dict,
+        "metadata": metadata,
+        "scan_date": end_time.strftime("%Y-%m-%d %H:%M:%S"),
+        "target": target,
+        "engine_version": "1.0.0"
+    }
+
+
+# ---------------------------------------------------------------------------
+# MODE: Full Audit
+# Nmap command: nmap -A <host>  (per discovered host)
+# Returns: full report with findings, risk scores, recommendations
+# ---------------------------------------------------------------------------
+
+def run_full_audit(target, start_time):
+
+    logger.info("Mode: Full Audit (nmap -A)")
 
     hosts = discover_hosts(target)
-
     logger.info(f"{len(hosts)} active hosts discovered")
 
     lab_report = LaboratoryReport(
@@ -49,25 +180,21 @@ def run_audit(target):
     )
 
     for host in hosts:
-
-        logger.info(f"Scanning {host}")
+        logger.info(f"Full scan on {host}")
 
         xml_file = run_detailed_scan(host)
-
         devices = parse_scan(xml_file)
 
         if not devices:
             continue
 
         device = devices[0]
-
         result = analyze(device)
 
         logger.info(
             f"{device.ip} -> Risk={result.risk_level} "
             f"Score={result.security_score}"
         )
-
         lab_report.results.append(result)
 
     stats = {
@@ -79,21 +206,14 @@ def run_audit(target):
     }
 
     recommendations = set()
-
     security_total = 0
-
     total_open_ports = 0
-
     total_findings = 0
-
     highest_risk_host = None
 
     for result in lab_report.results:
-
         security_total += result.security_score
-
         total_open_ports += len(result.device.ports)
-
         total_findings += len(result.findings)
 
         if (
@@ -103,98 +223,93 @@ def run_audit(target):
             highest_risk_host = result
 
         for finding in result.findings:
-
-            recommendations.add(
-                finding.recommendation
-            )
-
+            recommendations.add(finding.recommendation)
             severity = finding.severity.lower()
-
             if severity in stats:
                 stats[severity] += 1
 
     lab_report.statistics = stats
-
-    lab_report.recommendations = sorted(
-        recommendations
-    )
+    lab_report.recommendations = sorted(recommendations)
 
     if lab_report.results:
-
         lab_report.laboratory_security_score = int(
             security_total / len(lab_report.results)
         )
-
     else:
-
         lab_report.laboratory_security_score = 100
 
     end_time = datetime.now()
-
-    duration = (
-        end_time - start_time
-    ).total_seconds()
+    duration = (end_time - start_time).total_seconds()
 
     lab_report.metadata = {
-
         "engine": "Cybersecurity Audit Engine",
-
         "engine_version": "1.0.0",
-
         "rules_version": "2026.1",
-
         "scan_type": "Laboratory Network Audit",
-
-        "generated_at": end_time.strftime(
-            "%Y-%m-%d %H:%M:%S"
-        ),
-
+        "nmap_command": "nmap -A <host>",
+        "generated_at": end_time.strftime("%Y-%m-%d %H:%M:%S"),
         "scan_duration": f"{duration:.2f} seconds",
-
         "scanner": "Nmap 7.99",
-
         "parser": "Internal XML Parser",
-
         "python_version": platform.python_version(),
-
         "platform": platform.system(),
-
         "hostname": socket.gethostname(),
-
         "target": target,
-
         "status": "Completed",
-
         "total_devices": len(lab_report.results),
-
         "open_ports": total_open_ports,
-
         "total_findings": total_findings,
-
         "highest_risk_host": (
             highest_risk_host.device.ip
             if highest_risk_host
             else None
         ),
-
         "risk_distribution": {
-
             "Critical": stats["critical"],
-
             "High": stats["high"],
-
             "Medium": stats["medium"],
-
             "Low": stats["low"]
-
         }
-
     }
 
     report = report_to_dict(lab_report)
-
     update_inventory(lab_report)
-
     logger.info("Inventory updated")
+    cleanup()
 
+    report["scan_mode"] = "full"
     return report
+
+
+# ---------------------------------------------------------------------------
+# Main dispatcher
+# ---------------------------------------------------------------------------
+
+def run_audit(target, mode="full", previous_report=None):
+
+    start_time = datetime.now()
+
+    logger.info(f"Audit Engine Started - Mode: {mode}")
+    logger.info(f"Target: {target}")
+
+    if mode == "discovery":
+        return run_discovery_audit(target, start_time)
+
+    elif mode == "ports":
+        return run_port_sweep_audit(target, start_time)
+
+    else:
+        report = run_full_audit(target, start_time)
+
+        # Attach historical comparison when a previous report is provided
+        if previous_report:
+            try:
+                report["comparison"] = compare_audits(report, previous_report)
+                logger.info("Historical comparison generated")
+            except Exception as e:
+                logger.warning(f"Comparison failed: {e}")
+                report["comparison"] = None
+        else:
+            report["comparison"] = None
+
+        return report

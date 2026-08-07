@@ -18,3 +18,7 @@ def load_version_rules():
 def load_risk_categories():
     with open(CONFIG_FOLDER / "risk_categories.json") as f:
         return json.load(f)
+
+def load_cve_database():
+    with open(CONFIG_FOLDER / "cve_database.json") as f:
+        return json.load(f)
