@@ -1,24 +1,28 @@
 import json
 from pathlib import Path
 
-CONFIG_FOLDER = Path("config")
 
-def load_rules():
-    with open(CONFIG_FOLDER / "rules.json") as f:
-        return json.load(f)
+CONFIG_DIR = Path(__file__).resolve().parent.parent / "config"
 
-def load_port_rules():
-    with open(CONFIG_FOLDER / "port_rules.json") as f:
-        return json.load(f)
 
-def load_version_rules():
-    with open(CONFIG_FOLDER / "version_rules.json") as f:
-        return json.load(f)
+def _load_json(filename):
+    path = CONFIG_DIR / filename
 
-def load_risk_categories():
-    with open(CONFIG_FOLDER / "risk_categories.json") as f:
-        return json.load(f)
+    with open(path, "r", encoding="utf-8") as file:
+        return json.load(file)
+
 
 def load_cve_database():
-    with open(CONFIG_FOLDER / "cve_database.json") as f:
-        return json.load(f)
+    return _load_json("cve_database.json")
+
+
+def load_port_rules():
+    return _load_json("port_rules.json")
+
+
+def load_risk_categories():
+    return _load_json("risk_categories.json")
+
+
+def load_version_rules():
+    return _load_json("version_rules.json")

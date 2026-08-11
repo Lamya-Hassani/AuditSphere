@@ -1,50 +1,28 @@
-"""
-risk.py
--------
-Calculates risk score and security score from a list of findings.
-
-The risk score combines:
-  - Base points from rule/version/NSE findings
-  - CVSS-weighted bonus for CVE findings
-"""
-
-SEVERITY_POINTS = {
-    "Low": 1,
-    "Medium": 3,
-    "High": 5,
-    "Critical": 8
-}
+def calculate_risk_score(findings):
+    return sum(
+        finding.points
+        for finding in findings
+    )
 
 
-def calculate_risk_level(score: int) -> str:
+def calculate_risk_level(score):
+
     if score <= 3:
         return "Low"
-    elif score <= 8:
+
+    if score <= 8:
         return "Medium"
-    elif score <= 15:
+
+    if score <= 15:
         return "High"
-    else:
-        return "Critical"
+
+    return "Critical"
 
 
-def calculate_security_score(findings, mode: str = "security") -> int:
-    """
-    mode="risk"     → returns raw risk score (sum of points)
-    mode="security" → returns security score (100 - risk_score*5, min 0)
+def calculate_security_score(findings):
 
-    CVE findings contribute their CVSS-derived points directly.
-    """
-    total = 0
-    for finding in findings:
-        if finding.source == "cve" and finding.cvss is not None:
-            # Use CVSS-derived points (already set in cve_checker)
-            total += finding.points
-        else:
-            total += finding.points
+    risk_score = calculate_risk_score(findings)
 
-    if mode == "risk":
-        return total
+    score = 100 - (risk_score * 4)
 
-    # Security score: penalise harder for higher risk totals
-    score = 100 - (total * 4)
     return max(score, 0)

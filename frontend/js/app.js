@@ -157,11 +157,10 @@ export function renderNavbar(activePage = 'dashboard') {
   const isSuperAdmin = user.is_superuser === true;
   const isAdmin      = user.role === 'admin' || isSuperAdmin;
 
-  // Show user management link only to admins/superadmins
+  // Show user management link to admins/superadmins
   const usersLink = isAdmin ? `
     <a href="settings.html" class="nav-item-link ${activePage === 'settings' ? 'active' : ''}">
-      <i class="bi bi-people-fill"></i>
-      <span>User Management</span>
+      <i class="bi bi-people-fill"></i><span>User Management</span>
     </a>` : '';
 
   // Super-admin badge
@@ -188,9 +187,6 @@ export function renderNavbar(activePage = 'dashboard') {
         <a href="inventory.html" class="nav-item-link ${activePage === 'inventory' ? 'active' : ''}">
           <i class="bi bi-hdd-network-fill"></i><span>Inventory</span>
         </a>
-        <a href="reports.html" class="nav-item-link ${activePage === 'reports' ? 'active' : ''}">
-          <i class="bi bi-file-earmark-text-fill"></i><span>Reports</span>
-        </a>
         ${usersLink}
       </nav>
 
@@ -207,7 +203,6 @@ export function renderNavbar(activePage = 'dashboard') {
         <button class="sidebar-toggle" id="sidebar-toggle-btn">
           <i class="bi bi-list"></i>
         </button>
-        <h5 class="project-title">AuditSphere — Professional Cybersecurity Audit Platform</h5>
       </div>
       <div class="user-info">
         <div class="user-details d-none d-sm-block">
@@ -224,16 +219,35 @@ export function renderNavbar(activePage = 'dashboard') {
   // Page fade-in on load
   document.body.classList.add('page-enter');
 
-  // Sidebar toggle
   const toggleBtn = document.getElementById('sidebar-toggle-btn');
-  const sidebar   = document.getElementById('sidebar-menu');
+  const sidebar = document.getElementById('sidebar-menu');
+
   if (toggleBtn && sidebar) {
+    const isMobile = () => window.innerWidth <= 991.98;
+
     toggleBtn.addEventListener('click', e => {
       e.stopPropagation();
-      sidebar.classList.toggle('show');
+
+      if (isMobile()) {
+        sidebar.classList.toggle('show');
+      } else {
+        sidebar.classList.toggle('collapsed');
+      }
     });
+
     document.addEventListener('click', e => {
-      if (sidebar.classList.contains('show') && !sidebar.contains(e.target) && e.target !== toggleBtn) {
+      if (
+        isMobile() &&
+        sidebar.classList.contains('show') &&
+        !sidebar.contains(e.target) &&
+        e.target !== toggleBtn
+      ) {
+        sidebar.classList.remove('show');
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (!isMobile()) {
         sidebar.classList.remove('show');
       }
     });

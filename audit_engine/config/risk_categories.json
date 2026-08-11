@@ -1,10 +1,72 @@
 {
-    "Legacy Protocols": ["telnet", "ftp", "rsh", "rlogin", "tftp", "finger"],
-    "Remote Access": ["ssh", "ms-wbt-server", "vnc", "teamviewer"],
-    "Web Services": ["http", "https", "http-proxy", "http-alt"],
-    "File Services": ["microsoft-ds", "netbios-ssn", "nfs", "ftp"],
-    "Database Services": ["mysql", "ms-sql-s", "oracle", "postgresql", "mongodb"],
-    "Mail Services": ["smtp", "pop3", "imap"],
-    "Network Services": ["domain", "snmp", "ntp", "dhcp"],
-    "Known CVEs": ["ftp", "ssh", "http", "https", "microsoft-ds", "mysql", "smtp", "snmp"]
+    "Legacy Protocols": [
+        "telnet",
+        "ftp",
+        "rsh",
+        "rlogin",
+        "tftp",
+        "finger"
+    ],
+
+    "Remote Access": [
+        "ssh",
+        "ms-wbt-server",
+        "vnc",
+        "teamviewer"
+    ],
+
+    "Web Services": [
+        "http",
+        "https",
+        "http-proxy",
+        "http-alt",
+        "apache httpd",
+        "nginx"
+    ],
+
+    "File Services": [
+        "microsoft-ds",
+        "netbios-ssn",
+        "nfs",
+        "ftp",
+        "samba",
+        "proftpd",
+        "vsftpd"
+    ],
+
+    "Database Services": [
+        "mysql",
+        "ms-sql-s",
+        "oracle",
+        "postgresql",
+        "mongodb"
+    ],
+
+    "Mail Services": [
+        "smtp",
+        "pop3",
+        "imap"
+    ],
+
+    "Network Services": [
+        "domain",
+        "snmp",
+        "ntp",
+        "dhcp"
+    ],
+
+    "Security Infrastructure": [
+        "openssl"
+    ],
+
+    "Known CVEs": [
+        "vsftpd",
+        "openssh",
+        "apache httpd",
+        "nginx",
+        "openssl",
+        "samba",
+        "mysql",
+        "proftpd"
+    ]
 }

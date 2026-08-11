@@ -1,135 +1,142 @@
 {
-  "vsftpd": [
-    {
-      "id": "CVE-2011-2523",
-      "severity": "Critical",
-      "cvss": 10.0,
-      "affected_below": "2.3.5",
-      "fixed_version": "2.3.5",
-      "description": "vsftpd 2.3.4 contains a backdoor that opens a shell on port 6200 when a specific username pattern is used during login.",
-      "recommendation": "Upgrade vsftpd immediately to version 2.3.5 or later. Audit all FTP accounts and consider switching to SFTP."
-    },
-    {
-      "id": "CVE-2021-3618",
-      "severity": "High",
-      "cvss": 7.4,
-      "affected_below": "3.0.4",
-      "fixed_version": "3.0.4",
-      "description": "ALPACA attack: vsftpd before 3.0.4 is vulnerable to cross-protocol attacks exploiting TLS session confusion.",
-      "recommendation": "Upgrade vsftpd to 3.0.4+. Disable plain FTP and enforce FTPS (explicit or implicit TLS)."
-    }
-  ],
-  "openssh": [
-    {
-      "id": "CVE-2023-38408",
-      "severity": "Critical",
-      "cvss": 9.8,
-      "affected_below": "9.3p2",
-      "fixed_version": "9.3p2",
-      "description": "Remote code execution via ssh-agent when the agent is forwarded to an attacker-controlled server. Exploitable without authentication.",
-      "recommendation": "Upgrade OpenSSH to 9.3p2 or later. Disable ssh-agent forwarding (AllowAgentForwarding no) unless strictly required."
-    },
-    {
-      "id": "CVE-2024-6387",
-      "severity": "Critical",
-      "cvss": 8.1,
-      "affected_below": "9.8p1",
-      "fixed_version": "9.8p1",
-      "description": "regreSSHion: Race condition in OpenSSH sshd signal handler allows unauthenticated remote code execution as root on glibc-based Linux systems.",
-      "recommendation": "Upgrade OpenSSH to 9.8p1 immediately. Set LoginGraceTime to 0 in sshd_config as a temporary mitigation."
-    }
-  ],
-  "apache httpd": [
-    {
-      "id": "CVE-2021-41773",
-      "severity": "Critical",
-      "cvss": 9.8,
-      "affected_below": "2.4.50",
-      "fixed_version": "2.4.50",
-      "description": "Path traversal and remote code execution on Apache 2.4.49. An attacker can map URLs to files outside the document root.",
-      "recommendation": "Upgrade Apache to 2.4.50+. Ensure 'Require all denied' in Directory blocks. Disable CGI if not needed."
-    },
-    {
-      "id": "CVE-2022-31813",
-      "severity": "High",
-      "cvss": 9.8,
-      "affected_below": "2.4.55",
-      "fixed_version": "2.4.55",
-      "description": "Apache mod_proxy fails to send X-Forwarded-* headers to backends on hop-by-hop header abuse, enabling IP origin bypass.",
-      "recommendation": "Upgrade Apache to 2.4.55. Audit all reverse proxy configurations."
-    },
-    {
-      "id": "CVE-2024-39573",
-      "severity": "High",
-      "cvss": 7.5,
-      "affected_below": "2.4.67",
-      "fixed_version": "2.4.67",
-      "description": "Potential SSRF via mod_rewrite in Apache HTTP Server 2.4.59 and earlier allows URL redirection to arbitrary hosts.",
-      "recommendation": "Upgrade Apache to 2.4.67. Review all mod_rewrite rules for open redirect patterns."
-    }
-  ],
-  "nginx": [
-    {
-      "id": "CVE-2021-23017",
-      "severity": "High",
-      "cvss": 7.7,
-      "affected_below": "1.21.0",
-      "fixed_version": "1.21.0",
-      "description": "One-byte memory overwrite in the DNS resolver of nginx allows remote attackers to cause denial of service or potentially execute code.",
-      "recommendation": "Upgrade nginx to 1.21.0+. Restrict DNS resolver access and prefer internal resolvers."
-    }
-  ],
-  "openssl": [
-    {
-      "id": "CVE-2022-0778",
-      "severity": "High",
-      "cvss": 7.5,
-      "affected_below": "3.0.2",
-      "fixed_version": "3.0.2",
-      "description": "Infinite loop in BN_mod_sqrt() when processing malicious certificates. Causes denial of service.",
-      "recommendation": "Upgrade OpenSSL to 3.0.2+ or 1.1.1n+. Monitor certificate inputs."
-    },
-    {
-      "id": "CVE-2022-3786",
-      "severity": "High",
-      "cvss": 7.5,
-      "affected_below": "3.0.7",
-      "fixed_version": "3.0.7",
-      "description": "Buffer overflow in X.509 certificate verification. Can cause denial of service.",
-      "recommendation": "Upgrade OpenSSL to 3.0.7 immediately. Apply vendor security patches."
-    }
-  ],
-  "samba": [
-    {
-      "id": "CVE-2017-7494",
-      "severity": "Critical",
-      "cvss": 9.8,
-      "affected_below": "4.6.4",
-      "fixed_version": "4.6.4",
-      "description": "SambaCry: Remote code execution via writable share. Attacker uploads a shared library and triggers execution.",
-      "recommendation": "Upgrade Samba to 4.6.4+. Set 'nt pipe support = no' as temporary mitigation. Restrict writable shares."
-    }
-  ],
-  "mysql": [
-    {
-      "id": "CVE-2012-2122",
-      "severity": "Critical",
-      "cvss": 5.1,
-      "affected_below": "5.6.6",
-      "fixed_version": "5.6.6",
-      "description": "Authentication bypass: a memcmp timing vulnerability allows brute-force login with ~256 attempts regardless of password.",
-      "recommendation": "Upgrade MySQL to 5.6.6+. Apply the security patch immediately and rotate all database credentials."
-    }
-  ],
-  "proftpd": [
-    {
-      "id": "CVE-2015-3306",
-      "severity": "Critical",
-      "cvss": 10.0,
-      "affected_below": "1.3.5",
-      "fixed_version": "1.3.5",
-      "description": "Remote code execution via mod_copy: unauthenticated users can copy arbitrary files on the server.",
-      "recommendation": "Upgrade ProFTPD to 1.3.5+. Disable mod_copy module. Migrate to SFTP."
-    }
-  ]
+    "vsftpd": [
+        {
+            "id": "CVE-2011-2523",
+            "severity": "Critical",
+            "cvss": 10.0,
+            "affected_below": "2.3.5",
+            "fixed_version": "2.3.5",
+            "description": "vsftpd 2.3.4 contains a known backdoor vulnerability.",
+            "recommendation": "Upgrade vsftpd immediately and audit FTP accounts."
+        },
+        {
+            "id": "CVE-2021-3618",
+            "severity": "High",
+            "cvss": 7.4,
+            "affected_below": "3.0.4",
+            "fixed_version": "3.0.4",
+            "description": "Older vsftpd versions may be affected by the ALPACA cross-protocol attack.",
+            "recommendation": "Upgrade vsftpd and disable plain FTP where possible."
+        }
+    ],
+
+    "openssh": [
+        {
+            "id": "CVE-2023-38408",
+            "severity": "Critical",
+            "cvss": 9.8,
+            "affected_below": "9.3p2",
+            "fixed_version": "9.3p2",
+            "description": "A vulnerability in ssh-agent forwarding can allow remote code execution.",
+            "recommendation": "Upgrade OpenSSH and disable SSH agent forwarding unless required."
+        },
+        {
+            "id": "CVE-2024-6387",
+            "severity": "Critical",
+            "cvss": 8.1,
+            "affected_below": "9.8p1",
+            "fixed_version": "9.8p1",
+            "description": "A race condition in OpenSSH may allow unauthenticated remote code execution.",
+            "recommendation": "Upgrade OpenSSH to 9.8p1 or later."
+        }
+    ],
+
+    "apache httpd": [
+        {
+            "id": "CVE-2021-41773",
+            "severity": "Critical",
+            "cvss": 9.8,
+            "affected_below": "2.4.50",
+            "fixed_version": "2.4.50",
+            "description": "Path traversal and remote code execution vulnerability in affected Apache versions.",
+            "recommendation": "Upgrade Apache HTTP Server immediately."
+        },
+        {
+            "id": "CVE-2022-31813",
+            "severity": "High",
+            "cvss": 9.8,
+            "affected_below": "2.4.55",
+            "fixed_version": "2.4.55",
+            "description": "Apache mod_proxy vulnerability affecting certain configurations.",
+            "recommendation": "Upgrade Apache and review reverse proxy configuration."
+        },
+        {
+            "id": "CVE-2024-39573",
+            "severity": "High",
+            "cvss": 7.5,
+            "affected_below": "2.4.67",
+            "fixed_version": "2.4.67",
+            "description": "Potential SSRF vulnerability involving mod_rewrite.",
+            "recommendation": "Upgrade Apache and review mod_rewrite configuration."
+        }
+    ],
+
+    "nginx": [
+        {
+            "id": "CVE-2021-23017",
+            "severity": "High",
+            "cvss": 7.7,
+            "affected_below": "1.21.0",
+            "fixed_version": "1.21.0",
+            "description": "A DNS resolver vulnerability can cause memory corruption and denial of service.",
+            "recommendation": "Upgrade Nginx and restrict DNS resolver access."
+        }
+    ],
+
+    "openssl": [
+        {
+            "id": "CVE-2022-0778",
+            "severity": "High",
+            "cvss": 7.5,
+            "affected_below": "3.0.2",
+            "fixed_version": "3.0.2",
+            "description": "A malformed certificate can trigger an infinite loop and denial of service.",
+            "recommendation": "Upgrade OpenSSL to a supported security release."
+        },
+        {
+            "id": "CVE-2022-3786",
+            "severity": "High",
+            "cvss": 7.5,
+            "affected_below": "3.0.7",
+            "fixed_version": "3.0.7",
+            "description": "A buffer overflow vulnerability exists in X.509 certificate processing.",
+            "recommendation": "Upgrade OpenSSL to a patched version."
+        }
+    ],
+
+    "samba": [
+        {
+            "id": "CVE-2017-7494",
+            "severity": "Critical",
+            "cvss": 9.8,
+            "affected_below": "4.6.4",
+            "fixed_version": "4.6.4",
+            "description": "A writable Samba share can potentially be abused for remote code execution.",
+            "recommendation": "Upgrade Samba and restrict writable shares."
+        }
+    ],
+
+    "mysql": [
+        {
+            "id": "CVE-2012-2122",
+            "severity": "Critical",
+            "cvss": 5.1,
+            "affected_below": "5.6.6",
+            "fixed_version": "5.6.6",
+            "description": "An authentication bypass vulnerability affects certain MySQL versions.",
+            "recommendation": "Upgrade MySQL and rotate database credentials."
+        }
+    ],
+
+    "proftpd": [
+        {
+            "id": "CVE-2015-3306",
+            "severity": "Critical",
+            "cvss": 10.0,
+            "affected_below": "1.3.5",
+            "fixed_version": "1.3.5",
+            "description": "A mod_copy vulnerability can allow unauthenticated remote code execution.",
+            "recommendation": "Upgrade ProFTPD and disable mod_copy if not required."
+        }
+    ]
 }

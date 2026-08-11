@@ -7,10 +7,15 @@ from inventory.models import Device, Port
 from audits.models import Audit, AuditDevice, Finding
 
 
+from accounts.models import User
+
+
 class InventoryEndpointsTestCase(TestCase):
 
     def setUp(self):
+        self.user = User.objects.create_user(username="testadmin", role="admin", password="password123")
         self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
 
         self.device1 = Device.objects.create(
             ip="192.168.1.10",

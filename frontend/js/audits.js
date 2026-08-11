@@ -55,7 +55,6 @@ async function loadAudits() {
 function getAuditRiskLevel(audit) {
   if (!audit.devices || audit.devices.length === 0) return 'Safe';
   const levels = audit.devices.map(d => {
-    const dev = d.device || {};
     return (d.risk_level || '').toLowerCase();
   });
   if (levels.includes('critical')) return 'Critical';
@@ -80,7 +79,7 @@ function handleSortClick(field) {
     currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
   } else {
     currentSortField = field;
-    currentSortOrder = 'desc'; // default to descending for numbers/dates
+    currentSortOrder = 'desc';
   }
   updateSortIcons();
   applyFilterAndSort();
@@ -102,8 +101,8 @@ function updateSortIcons() {
 function applyFilterAndSort() {
   // 1. Filter
   filteredAudits = allAudits.filter(audit => {
-    const targetMatch = audit.target.toLowerCase().includes(searchQuery.toLowerCase());
-    const statusMatch = audit.status.toLowerCase().includes(searchQuery.toLowerCase());
+    const targetMatch = (audit.target || '').toLowerCase().includes(searchQuery.toLowerCase());
+    const statusMatch = (audit.status || '').toLowerCase().includes(searchQuery.toLowerCase());
     return targetMatch || statusMatch;
   });
 
@@ -117,8 +116,8 @@ function applyFilterAndSort() {
         valB = new Date(b.scan_date).getTime();
         break;
       case 'target':
-        valA = a.target.toLowerCase();
-        valB = b.target.toLowerCase();
+        valA = (a.target || '').toLowerCase();
+        valB = (b.target || '').toLowerCase();
         break;
       case 'devices':
         valA = a.statistics?.devices || 0;
@@ -139,7 +138,10 @@ function applyFilterAndSort() {
   });
 
   // Update total counts display
-  document.getElementById('audit-total-count').textContent = filteredAudits.length;
+  const totalCountEl = document.getElementById('audit-total-count');
+  if (totalCountEl) {
+    totalCountEl.textContent = filteredAudits.length;
+  }
 
   renderTable();
 }
@@ -224,36 +226,41 @@ function updatePagination(totalCount) {
   if (currentPage > totalPages) currentPage = totalPages;
 
   // Pagination display text
-  const start = totalCount === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
-  const end = Math.min(currentPage * itemsPerPage, totalCount);
-  pagInfo.textContent = `Showing ${start}-${end} of ${totalCount} entries`;
+  if (pagInfo) {
+    const start = totalCount === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+    const end = Math.min(currentPage * itemsPerPage, totalCount);
+    pagInfo.textContent = `Showing ${start}-${end} of ${totalCount} entries`;
+  }
 
   // Prev / Next button states
-  pagePrev.classList.toggle('disabled', currentPage === 1);
-  pageNext.classList.toggle('disabled', currentPage === totalPages);
+  if (pagePrev) pagePrev.classList.toggle('disabled', currentPage === 1);
+  if (pageNext) pageNext.classList.toggle('disabled', currentPage === totalPages);
 
   // Render Page Numbers
   const paginationUl = document.querySelector('.pagination');
-  // clear existing numbers
-  paginationUl.querySelectorAll('.page-number').forEach(el => el.remove());
+  if (paginationUl) {
+    paginationUl.querySelectorAll('.page-number').forEach(el => el.remove());
 
-  const prevNode = document.getElementById('page-prev');
-  for (let i = 1; i <= totalPages; i++) {
-    const li = document.createElement('li');
-    li.className = `page-item page-number ${i === currentPage ? 'active' : ''}`;
-    li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-    li.addEventListener('click', (e) => {
-      e.preventDefault();
-      currentPage = i;
-      renderTable();
-    });
-    
-    // insert before next page button
-    paginationUl.insertBefore(li, document.getElementById('page-next'));
+    const nextNode = document.getElementById('page-next');
+    for (let i = 1; i <= totalPages; i++) {
+      const li = document.createElement('li');
+      li.className = `page-item page-number ${i === currentPage ? 'active' : ''}`;
+      li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+      li.addEventListener('click', (e) => {
+        e.preventDefault();
+        currentPage = i;
+        renderTable();
+      });
+      if (nextNode) {
+        paginationUl.insertBefore(li, nextNode);
+      } else {
+        paginationUl.appendChild(li);
+      }
+    }
   }
 
   // Setup previous and next click events once
-  if (!pagePrev.dataset.bound) {
+  if (pagePrev && !pagePrev.dataset.bound) {
     pagePrev.addEventListener('click', (e) => {
       e.preventDefault();
       if (currentPage > 1) {
@@ -261,10 +268,10 @@ function updatePagination(totalCount) {
         renderTable();
       }
     });
-    pagePrev.dataset.bound = "true";
+    pagePrev.dataset.bound = 'true';
   }
 
-  if (!pageNext.dataset.bound) {
+  if (pageNext && !pageNext.dataset.bound) {
     pageNext.addEventListener('click', (e) => {
       e.preventDefault();
       if (currentPage < totalPages) {
@@ -272,7 +279,7 @@ function updatePagination(totalCount) {
         renderTable();
       }
     });
-    pageNext.dataset.bound = "true";
+    pageNext.dataset.bound = 'true';
   }
 }
 

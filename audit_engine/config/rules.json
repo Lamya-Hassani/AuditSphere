@@ -1,73 +1,32 @@
 {
-    "ftp": {
-        "ports": [21],
-        "severity": "Medium",
-        "points": 3,
-        "description": "FTP transmits credentials in plaintext.",
-        "recommendation": "Replace FTP with SFTP or FTPS."
+    "rules_version": "2026.2",
+
+    "risk_levels": {
+        "critical": {
+            "minimum_score": 10
+        },
+        "high": {
+            "minimum_score": 7
+        },
+        "medium": {
+            "minimum_score": 4
+        },
+        "low": {
+            "minimum_score": 1
+        },
+        "none": {
+            "minimum_score": 0
+        }
     },
 
-    "ssh": {
-        "ports": [22],
-        "severity": "Low",
-        "points": 1,
-        "description": "SSH provides encrypted remote administration.",
-        "recommendation": "Use SSH keys and disable password authentication."
+    "scoring": {
+        "maximum_security_score": 100
     },
 
-    "telnet": {
-        "ports": [23],
-        "severity": "High",
-        "points": 5,
-        "description": "Telnet transmits all traffic in plaintext.",
-        "recommendation": "Disable Telnet and replace it with SSH."
-    },
-
-    "http": {
-        "ports": [80],
-        "severity": "Medium",
-        "points": 3,
-        "description": "HTTP traffic is not encrypted.",
-        "recommendation": "Redirect users to HTTPS."
-    },
-
-    "https": {
-        "ports": [443],
-        "severity": "Low",
-        "points": 1,
-        "description": "Encrypted web service.",
-        "recommendation": "Maintain valid TLS configuration."
-    },
-
-    "domain": {
-        "ports": [53],
-        "severity": "Low",
-        "points": 2,
-        "description": "DNS service detected.",
-        "recommendation": "Disable public recursion and restrict zone transfers."
-    },
-
-    "smtp": {
-        "ports": [25],
-        "severity": "Medium",
-        "points": 3,
-        "description": "SMTP service detected.",
-        "recommendation": "Prevent open relay and enable TLS."
-    },
-
-    "microsoft-ds": {
-        "ports": [445],
-        "severity": "Medium",
-        "points": 4,
-        "description": "SMB service exposed.",
-        "recommendation": "Disable SMBv1 and restrict SMB access."
-    },
-
-    "ms-wbt-server": {
-        "ports": [3389],
-        "severity": "Medium",
-        "points": 4,
-        "description": "Remote Desktop service exposed.",
-        "recommendation": "Restrict RDP using VPN, firewall and MFA."
+    "severity_weights": {
+        "Critical": 10,
+        "High": 5,
+        "Medium": 3,
+        "Low": 1
     }
 }

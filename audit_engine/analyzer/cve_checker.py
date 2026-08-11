@@ -1,58 +1,56 @@
-"""
-cve_checker.py
---------------
-Matches detected product+version against the local CVE database.
-Returns one Finding per matched CVE entry.
-
-The database key is the lowercase product name (e.g. "apache httpd").
-Each entry is a list of CVE objects with:
-  id, severity, cvss, affected_below, fixed_version, description, recommendation
-"""
-
 from analyzer.rules_loader import load_cve_database
 from analyzer.version_checker import compare_versions
 from models.finding import Finding
 
-# CVSS score → risk points mapping (added on top of base service points)
-CVSS_TO_POINTS = {
-    range(0, 4):   1,   # Low
-    range(4, 7):   3,   # Medium
-    range(7, 9):   5,   # High
-    range(9, 11):  8,   # Critical
+
+CVSS_POINTS = {
+    "Low": 1,
+    "Medium": 3,
+    "High": 5,
+    "Critical": 8,
 }
 
 
-def _cvss_points(cvss: float) -> int:
-    for r, pts in CVSS_TO_POINTS.items():
-        if int(cvss) in r:
-            return pts
-    return 3
+def cvss_to_points(cvss):
+    if cvss < 4:
+        return 1
+
+    if cvss < 7:
+        return 3
+
+    if cvss < 9:
+        return 5
+
+    return 8
 
 
-def check_cves(device) -> list:
-    """
-    Iterate over device ports and match product+version against the local CVE DB.
-    Returns a list of Finding objects, one per matched CVE.
-    """
+def check_cves(device):
+    database = load_cve_database()
     findings = []
-    db = load_cve_database()
 
     for port in device.ports:
-        if not port.product:
+
+        if not port.product or not port.version:
             continue
 
-        product_key = port.product.lower().strip()
+        product = port.product.lower().strip()
 
-        if product_key not in db:
+        cves = database.get(product)
+
+        if not cves:
             continue
 
-        for cve in db[product_key]:
+        for cve in cves:
+
             affected_below = cve.get("affected_below")
 
-            # If version info is missing, still report the CVE as informational
-            if port.version and affected_below:
-                if not compare_versions(port.version, affected_below):
-                    continue   # installed version is >= fixed → not affected
+            if affected_below:
+
+                if not compare_versions(
+                    port.version,
+                    affected_below
+                ):
+                    continue
 
             findings.append(
                 Finding(
@@ -60,10 +58,11 @@ def check_cves(device) -> list:
                     port=port.number,
                     product=port.product,
                     version=port.version,
+                    fixed_version=cve.get("fixed_version"),
                     severity=cve["severity"],
                     description=cve["description"],
                     recommendation=cve["recommendation"],
-                    points=_cvss_points(cve["cvss"]),
+                    points=cvss_to_points(cve["cvss"]),
                     cve_id=cve["id"],
                     cvss=cve["cvss"],
                     cve_data=[cve],

@@ -2,7 +2,6 @@ from datetime import datetime
 import platform
 import socket
 import shutil
-
 from pathlib import Path
 
 from scanner.discovery import discover_hosts, discover_hosts_detailed
@@ -10,18 +9,20 @@ from scanner.detailed_scan import run_detailed_scan
 from scanner.port_sweep import run_port_sweep
 from scanner.parser import parse_scan
 
-from analyzer.analyzer import analyze
+from analyzer.analyzer import analyzer
+
 from comparator.compare import compare_audits
 from exporter.json_exporter import report_to_dict
 from inventory.inventory_manager import update_inventory
 from logger.logger import logger
+
 from models.laboratory_report import LaboratoryReport
 from models.scan_result import ScanResult
+
 from config.config_loader import load_config
 
 
 def cleanup():
-
     config = load_config()
 
     if config["engine"].get("keep_temp_files", True):
@@ -33,14 +34,6 @@ def cleanup():
 
     if temp_folder.exists():
         shutil.rmtree(temp_folder)
-
-
-# ---------------------------------------------------------------------------
-# MODE: Host Discovery
-# Nmap command: nmap -sn <target>
-# Returns: list of discovered hosts with IP, hostname, MAC, vendor, status
-# No port scanning, no analysis, no risk scoring
-# ---------------------------------------------------------------------------
 
 def run_discovery_audit(target, start_time):
 
@@ -79,24 +72,18 @@ def run_discovery_audit(target, start_time):
         "engine_version": "1.0.0"
     }
 
-
-# ---------------------------------------------------------------------------
-# MODE: Port Sweep
-# Nmap command: nmap -sV --open -T4 <host>  (per discovered host)
-# Returns: list of devices with their open ports and service info
-# No OS detection, no scripts, no risk analysis
-# ---------------------------------------------------------------------------
-
 def run_port_sweep_audit(target, start_time):
 
     logger.info("Mode: Port Sweep (nmap -sV --open -T4)")
 
     active_hosts = discover_hosts(target)
+
     logger.info(f"{len(active_hosts)} active hosts discovered")
 
     devices_dict = []
 
     for host in active_hosts:
+
         logger.info(f"Port sweeping {host}")
 
         xml_file = run_port_sweep(host)
@@ -131,7 +118,11 @@ def run_port_sweep_audit(target, start_time):
 
     end_time = datetime.now()
     duration = (end_time - start_time).total_seconds()
-    total_open_ports = sum(len(d["ports"]) for d in devices_dict)
+
+    total_open_ports = sum(
+        len(device["ports"])
+        for device in devices_dict
+    )
 
     metadata = {
         "engine": "Cybersecurity Audit Engine",
@@ -160,18 +151,12 @@ def run_port_sweep_audit(target, start_time):
         "engine_version": "1.0.0"
     }
 
-
-# ---------------------------------------------------------------------------
-# MODE: Full Audit
-# Nmap command: nmap -A <host>  (per discovered host)
-# Returns: full report with findings, risk scores, recommendations
-# ---------------------------------------------------------------------------
-
 def run_full_audit(target, start_time):
 
     logger.info("Mode: Full Audit (nmap -A)")
 
     hosts = discover_hosts(target)
+
     logger.info(f"{len(hosts)} active hosts discovered")
 
     lab_report = LaboratoryReport(
@@ -180,6 +165,7 @@ def run_full_audit(target, start_time):
     )
 
     for host in hosts:
+
         logger.info(f"Full scan on {host}")
 
         xml_file = run_detailed_scan(host)
@@ -189,12 +175,28 @@ def run_full_audit(target, start_time):
             continue
 
         device = devices[0]
-        result = analyze(device)
+
+        # Analyze the device
+        analysis = analyzer(device)
+
+        # Convert analyzer result into ScanResult
+        result = ScanResult(
+            device=device,
+            scan_date=datetime.now(),
+            findings=analysis["findings"],
+            security_score=analysis["security_score"],
+            risk_score=analysis["risk_score"],
+            risk_level=analysis["risk_level"],
+            risk_categories=analysis["risk_categories"],
+            score_breakdown=analysis["score_breakdown"]
+        )
 
         logger.info(
-            f"{device.ip} -> Risk={result.risk_level} "
+            f"{device.ip} -> "
+            f"Risk={result.risk_level} "
             f"Score={result.security_score}"
         )
+
         lab_report.results.append(result)
 
     stats = {
@@ -206,15 +208,23 @@ def run_full_audit(target, start_time):
     }
 
     recommendations = set()
+
     security_total = 0
     total_open_ports = 0
     total_findings = 0
     highest_risk_host = None
 
     for result in lab_report.results:
+
         security_total += result.security_score
-        total_open_ports += len(result.device.ports)
-        total_findings += len(result.findings)
+
+        total_open_ports += len(
+            result.device.ports
+        )
+
+        total_findings += len(
+            result.findings
+        )
 
         if (
             highest_risk_host is None
@@ -223,13 +233,23 @@ def run_full_audit(target, start_time):
             highest_risk_host = result
 
         for finding in result.findings:
-            recommendations.add(finding.recommendation)
+
+            if finding.recommendation:
+                recommendations.add(
+                    finding.recommendation
+                )
+
             severity = finding.severity.lower()
+
             if severity in stats:
                 stats[severity] += 1
 
     lab_report.statistics = stats
-    lab_report.recommendations = sorted(recommendations)
+    lab_report.recommendations = sorted(list(recommendations))
+
+    # ========================================================
+    # Laboratory security score & risk level
+    # ========================================================
 
     if lab_report.results:
         lab_report.laboratory_security_score = int(
@@ -237,6 +257,20 @@ def run_full_audit(target, start_time):
         )
     else:
         lab_report.laboratory_security_score = 100
+
+    score = lab_report.laboratory_security_score
+    if score >= 90:
+        lab_report.laboratory_risk_level = "Low"
+    elif score >= 70:
+        lab_report.laboratory_risk_level = "Medium"
+    elif score >= 50:
+        lab_report.laboratory_risk_level = "High"
+    else:
+        lab_report.laboratory_risk_level = "Critical"
+
+    # ========================================================
+    # Metadata
+    # ========================================================
 
     end_time = datetime.now()
     duration = (end_time - start_time).total_seconds()
@@ -272,44 +306,88 @@ def run_full_audit(target, start_time):
         }
     }
 
+    # ========================================================
+    # Export and inventory
+    # ========================================================
+
     report = report_to_dict(lab_report)
+
     update_inventory(lab_report)
+
     logger.info("Inventory updated")
+
     cleanup()
 
     report["scan_mode"] = "full"
+
     return report
 
 
-# ---------------------------------------------------------------------------
+# ============================================================
 # Main dispatcher
-# ---------------------------------------------------------------------------
+# ============================================================
 
-def run_audit(target, mode="full", previous_report=None):
+def run_audit(
+    target,
+    mode="full",
+    previous_report=None
+):
 
     start_time = datetime.now()
 
-    logger.info(f"Audit Engine Started - Mode: {mode}")
-    logger.info(f"Target: {target}")
+    logger.info(
+        f"Audit Engine Started - Mode: {mode}"
+    )
+
+    logger.info(
+        f"Target: {target}"
+    )
 
     if mode == "discovery":
-        return run_discovery_audit(target, start_time)
+
+        return run_discovery_audit(
+            target,
+            start_time
+        )
 
     elif mode == "ports":
-        return run_port_sweep_audit(target, start_time)
+
+        return run_port_sweep_audit(
+            target,
+            start_time
+        )
 
     else:
-        report = run_full_audit(target, start_time)
 
-        # Attach historical comparison when a previous report is provided
+        report = run_full_audit(
+            target,
+            start_time
+        )
+
+        # Historical comparison
         if previous_report:
+
             try:
-                report["comparison"] = compare_audits(report, previous_report)
-                logger.info("Historical comparison generated")
+
+                report["comparison"] = compare_audits(
+                    report,
+                    previous_report
+                )
+
+                logger.info(
+                    "Historical comparison generated"
+                )
+
             except Exception as e:
-                logger.warning(f"Comparison failed: {e}")
+
+                logger.warning(
+                    f"Comparison failed: {e}"
+                )
+
                 report["comparison"] = None
+
         else:
+
             report["comparison"] = None
 
         return report

@@ -14,14 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // User Management
   loadUsers();
-  document.getElementById('add-user-btn').addEventListener('click', openCreateUserModal);
-  document.getElementById('user-form').addEventListener('submit', handleUserFormSubmit);
-
-  // Platform Config
-  loadSettings();
-  document.getElementById('settings-form').addEventListener('submit', handleSaveSettings);
-  document.getElementById('reset-settings-btn')?.addEventListener('click', handleResetSettings);
-  document.getElementById('update-rules-btn')?.addEventListener('click', handleCheckUpdates);
+  document.getElementById('add-user-btn')?.addEventListener('click', openCreateUserModal);
+  document.getElementById('user-form')?.addEventListener('submit', handleUserFormSubmit);
 
   // Hide superuser checkbox from non-superadmins
   const superuserRow = document.getElementById('usr-superuser')?.closest('.col-md-6');
@@ -35,10 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     adminOption.classList.add('d-none');
   }
 });
-
-// ---------------------------------------------------------------------------
-// User Management
-// ---------------------------------------------------------------------------
 
 async function loadUsers() {
   const tbody = document.getElementById('users-tbody');
@@ -195,64 +185,4 @@ async function handleDeleteUser(userId, username) {
   } catch (error) {
     showToast(`Delete failed: ${error.message}`, 'danger');
   }
-}
-
-// ---------------------------------------------------------------------------
-// Platform Configuration
-// ---------------------------------------------------------------------------
-
-const DEFAULT_SETTINGS = {
-  vmIp: '192.168.56.101',
-  enginePort: '8000',
-  timeout: '300',
-  scoreAlert: '80',
-  maxConcurrency: '2',
-  autoUpdate: true
-};
-
-function loadSettings() {
-  const saved = localStorage.getItem('platform_settings');
-  let settings = DEFAULT_SETTINGS;
-  if (saved) {
-    try { settings = { ...DEFAULT_SETTINGS, ...JSON.parse(saved) }; } catch { /* fallback */ }
-  }
-  document.getElementById('vm-ip').value           = settings.vmIp;
-  document.getElementById('engine-port').value     = settings.enginePort;
-  document.getElementById('api-timeout').value     = settings.timeout;
-  document.getElementById('score-alert').value     = settings.scoreAlert;
-  document.getElementById('max-concurrency').value = settings.maxConcurrency;
-  document.getElementById('auto-update').checked   = settings.autoUpdate;
-}
-
-function handleSaveSettings(e) {
-  e.preventDefault();
-  const settings = {
-    vmIp:           document.getElementById('vm-ip').value.trim(),
-    enginePort:     document.getElementById('engine-port').value.trim(),
-    timeout:        document.getElementById('api-timeout').value.trim(),
-    scoreAlert:     document.getElementById('score-alert').value.trim(),
-    maxConcurrency: document.getElementById('max-concurrency').value.trim(),
-    autoUpdate:     document.getElementById('auto-update').checked
-  };
-  localStorage.setItem('platform_settings', JSON.stringify(settings));
-  showToast('Platform settings saved successfully.', 'success');
-}
-
-async function handleResetSettings() {
-  const confirmed = await showConfirm('Reset all configurations to platform defaults?');
-  if (!confirmed) return;
-  localStorage.setItem('platform_settings', JSON.stringify(DEFAULT_SETTINGS));
-  loadSettings();
-  showToast('Settings reset to defaults.', 'info');
-}
-
-function handleCheckUpdates() {
-  const btn = document.getElementById('update-rules-btn');
-  btn.disabled = true;
-  btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Checking...`;
-  setTimeout(() => {
-    btn.disabled = false;
-    btn.innerHTML = `<i class="bi bi-arrow-repeat me-1"></i>Check Updates`;
-    showToast('Threat signature database is up to date (v1.2.4).', 'success');
-  }, 1500);
 }

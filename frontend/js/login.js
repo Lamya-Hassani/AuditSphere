@@ -88,29 +88,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
-
-  demoAdminBtn?.addEventListener('click', () => {
-    const u = document.getElementById('username');
-    const p = document.getElementById('password');
-    if (u) u.value = 'admin';
-    if (p) p.value = 'admin123';
-    loginForm.dispatchEvent(new Event('submit'));
-  });
-
-  demoAuditorBtn?.addEventListener('click', () => {
-    const u = document.getElementById('username');
-    const p = document.getElementById('password');
-    if (u) u.value = 'auditor';
-    if (p) p.value = 'auditor123';
-    loginForm.dispatchEvent(new Event('submit'));
-  });
-
-  // Super Admin demo
-  document.getElementById('demo-super')?.addEventListener('click', () => {
-    const u = document.getElementById('username');
-    const p = document.getElementById('password');
-    if (u) u.value = 'super';
-    if (p) p.value = 'admin123';
-    loginForm.dispatchEvent(new Event('submit'));
-  });
 });

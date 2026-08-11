@@ -256,3 +256,32 @@
 2026-08-07 13:08:32 | INFO | 192.168.1.10 -> Risk=Low Score=88
 2026-08-07 13:08:32 | INFO | Inventory updated
 2026-08-07 13:08:32 | INFO | Historical comparison generated
+2026-08-11 11:56:49 | INFO | Audit Engine Started - Mode: full
+2026-08-11 11:56:49 | INFO | Target: 192.168.1.0/24
+2026-08-11 11:56:49 | INFO | Mode: Full Audit (nmap -A)
+2026-08-11 11:56:59 | INFO | 2 active hosts discovered
+2026-08-11 11:56:59 | INFO | Full scan on 192.168.1.20
+2026-08-11 11:58:06 | INFO | 192.168.1.20 -> Risk=Critical Score=36
+2026-08-11 11:58:06 | INFO | Full scan on 192.168.1.10
+2026-08-11 11:58:53 | INFO | 192.168.1.10 -> Risk=Low Score=100
+2026-08-11 11:58:53 | INFO | Inventory updated
+2026-08-11 11:58:53 | INFO | Historical comparison generated
+2026-08-11 12:44:34 | INFO | Audit Engine Started - Mode: ports
+2026-08-11 12:44:34 | INFO | Target: 192.168.1.10
+2026-08-11 12:44:34 | INFO | Mode: Port Sweep (nmap -sV --open -T4)
+2026-08-11 12:44:43 | INFO | 1 active hosts discovered
+2026-08-11 12:44:43 | INFO | Port sweeping 192.168.1.10
+2026-08-11 14:08:47 | INFO | Audit Engine Started - Mode: discovery
+2026-08-11 14:08:48 | INFO | Target: 192.168.1.0/24
+2026-08-11 14:08:48 | INFO | Mode: Host Discovery (nmap -sn)
+2026-08-11 14:10:39 | INFO | 3 active hosts discovered
+2026-08-11 14:11:24 | INFO | Audit Engine Started - Mode: full
+2026-08-11 14:11:24 | INFO | Target: 192.168.1.0/24
+2026-08-11 14:11:24 | INFO | Mode: Full Audit (nmap -A)
+2026-08-11 14:11:33 | INFO | 2 active hosts discovered
+2026-08-11 14:11:33 | INFO | Full scan on 192.168.1.30
+2026-08-11 14:12:25 | INFO | 192.168.1.30 -> Risk=Critical Score=0
+2026-08-11 14:12:25 | INFO | Full scan on 192.168.1.10
+2026-08-11 14:14:27 | INFO | 192.168.1.10 -> Risk=Low Score=100
+2026-08-11 14:14:27 | INFO | Inventory updated
+2026-08-11 14:14:27 | INFO | Historical comparison generated

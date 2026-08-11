@@ -7,10 +7,15 @@ from audits.models import Audit, AuditStatistic
 from inventory.models import Device
 
 
+from accounts.models import User
+
+
 class DashboardEndpointsTestCase(TestCase):
 
     def setUp(self):
+        self.user = User.objects.create_user(username="testauditor", role="auditor", password="password123")
         self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
 
     def test_dashboard_summary_empty_database(self):
         response = self.client.get("/api/dashboard/")

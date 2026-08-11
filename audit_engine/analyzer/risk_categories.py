@@ -6,12 +6,7 @@ def calculate_categories(findings):
     rules = load_risk_categories()
 
     categories = set()
-
     breakdown = {}
-
-    for category in rules:
-
-        breakdown[category] = 0
 
     for finding in findings:
 
@@ -19,20 +14,17 @@ def calculate_categories(findings):
 
         for category, services in rules.items():
 
-            if service in services:
+            if service not in services:
+                continue
 
-                categories.add(category)
+            categories.add(category)
 
-                breakdown[category] += finding.points
+            breakdown[category] = (
+                breakdown.get(category, 0)
+                + finding.points
+            )
 
-    breakdown = {
-
-        k: v
-
-        for k, v in breakdown.items()
-
-        if v > 0
-
-    }
-
-    return list(categories), breakdown
+    return (
+        sorted(categories),
+        breakdown
+    )

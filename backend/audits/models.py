@@ -110,6 +110,8 @@ class Finding(models.Model):
 
     cvss_score = models.FloatField(blank=True, null=True)
 
+    fixed_version = models.CharField(max_length=100, blank=True, null=True)
+
     source = models.CharField(max_length=50, default="rule")
 
     def __str__(self):

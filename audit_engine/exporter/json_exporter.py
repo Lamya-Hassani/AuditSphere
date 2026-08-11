@@ -33,6 +33,9 @@ def report_to_dict(report):
         "laboratory_security_score":
             report.laboratory_security_score,
 
+        "laboratory_risk_level":
+            report.laboratory_risk_level,
+
         "statistics": report.statistics,
 
         "recommendations": report.recommendations,

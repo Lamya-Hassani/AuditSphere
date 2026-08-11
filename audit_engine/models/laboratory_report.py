@@ -12,4 +12,5 @@ class LaboratoryReport:
     statistics: dict = field(default_factory=dict)
     recommendations: list[str] = field(default_factory=list)
     laboratory_security_score: int = 100
+    laboratory_risk_level: str = "Low"
     metadata: dict = field(default_factory=dict)
