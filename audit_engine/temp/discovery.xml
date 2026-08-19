@@ -1,22 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE nmaprun>
 <?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
-<!-- Nmap 7.99 scan initiated Tue Aug 11 14:11:25 2026 as: /usr/lib/nmap/nmap -sn -oX temp/discovery.xml 192.168.1.0/24 -->
-<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -sn -oX temp/discovery.xml 192.168.1.0/24" start="1786453885" startstr="Tue Aug 11 14:11:25 2026" version="7.99" xmloutputversion="1.05">
+<!-- Nmap 7.99 scan initiated Tue Aug 11 15:43:02 2026 as: /usr/lib/nmap/nmap -sn -oX temp/discovery.xml 192.168.1.0/24 -->
+<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -sn -oX temp/discovery.xml 192.168.1.0/24" start="1786459382" startstr="Tue Aug 11 15:43:02 2026" version="7.99" xmloutputversion="1.05">
 <verbose level="0"/>
 <debugging level="0"/>
+<host><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.1.20" addrtype="ipv4"/>
+<address addr="08:00:27:90:51:CA" addrtype="mac" vendor="Oracle VirtualBox virtual NIC"/>
+<hostnames>
+</hostnames>
+<times srtt="1982" rttvar="5000" to="100000"/>
+</host>
 <host><status state="up" reason="arp-response" reason_ttl="0"/>
 <address addr="192.168.1.30" addrtype="ipv4"/>
 <address addr="08:00:27:D5:A7:42" addrtype="mac" vendor="Oracle VirtualBox virtual NIC"/>
 <hostnames>
 </hostnames>
-<times srtt="4055" rttvar="2645" to="100000"/>
+<times srtt="1436" rttvar="1741" to="100000"/>
 </host>
 <host><status state="up" reason="localhost-response" reason_ttl="0"/>
 <address addr="192.168.1.10" addrtype="ipv4"/>
 <hostnames>
 </hostnames>
 </host>
-<runstats><finished time="1786453892" timestr="Tue Aug 11 14:11:32 2026" summary="Nmap done at Tue Aug 11 14:11:32 2026; 256 IP addresses (2 hosts up) scanned in 7.68 seconds" elapsed="7.68" exit="success"/><hosts up="2" down="254" total="256"/>
+<runstats><finished time="1786459389" timestr="Tue Aug 11 15:43:09 2026" summary="Nmap done at Tue Aug 11 15:43:09 2026; 256 IP addresses (3 hosts up) scanned in 7.53 seconds" elapsed="7.53" exit="success"/><hosts up="3" down="253" total="256"/>
 </runstats>
 </nmaprun>

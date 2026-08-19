@@ -42,6 +42,17 @@ function setFilter(status, activeBtn) {
   activeBtn.classList.add('active');
   const search = document.getElementById('inventory-search').value.trim();
   loadInventory(search, currentStatusFilter);
+function formatHostName(dev) {
+  if (!dev) return 'Host';
+  const h = dev.hostname || dev.device_hostname;
+  if (h && h !== 'Unknown' && h !== 'Unknown Hostname' && h !== '—' && h !== 'N/A' && h !== (dev.ip || dev.device_ip)) {
+    return h;
+  }
+  const os = dev.operating_system || dev.os || dev.device_os;
+  if (os && os !== 'Generic OS' && os !== 'Unknown' && os !== 'N/A' && os !== '—') {
+    return os;
+  }
+  return dev.ip || dev.device_ip || 'Host';
 }
 
 async function loadInventory(search, status) {
@@ -79,7 +90,7 @@ async function loadInventory(search, status) {
       return `
         <tr>
           <td><span class="code-box">${device.ip}</span></td>
-          <td class="fw-semibold text-dark">${device.hostname || 'Unknown'}</td>
+          <td class="fw-semibold text-dark">${formatHostName(device)}</td>
           <td class="small text-muted">${device.operating_system || 'Generic OS'}</td>
           <td>
             <span class="status-dot ${isOnline ? 'dot-online' : 'dot-offline'}"></span>
@@ -155,7 +166,7 @@ async function openDeviceModal(deviceId) {
           <div class="p-3 rounded border bg-light">
             <div class="text-muted small">IP Address</div>
             <div class="fw-bold fs-5 text-dark">${device.ip}</div>
-            <div class="text-muted small mt-1">Hostname: ${device.hostname || 'N/A'}</div>
+            <div class="text-muted small mt-1">Hostname: ${formatHostName(device)}</div>
           </div>
         </div>
         <div class="col-md-6">

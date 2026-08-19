@@ -142,10 +142,18 @@ async function loadTrendAndVulnerableDevices() {
       vulnerableDevicesBody.innerHTML = sortedDevices.map(device => {
         const riskLevel = device.latest_risk_level || 'unknown';
         const riskClass = getSeverityBadgeClass(riskLevel);
+        const h = device.hostname;
+        const os = device.operating_system;
+        const displayHost = (h && h !== 'Unknown' && h !== 'Unknown Hostname' && h !== '—' && h !== 'N/A' && h !== device.ip)
+          ? h
+          : (os && os !== 'Generic OS' && os !== 'Unknown' && os !== 'N/A' && os !== '—')
+            ? os
+            : device.ip;
+
         return `
           <tr>
             <td><span class="code-box">${device.ip}</span></td>
-            <td class="fw-semibold">${device.hostname || 'N/A'}</td>
+            <td class="fw-semibold">${displayHost}</td>
             <td class="small text-muted">${device.operating_system || 'Generic OS'}</td>
             <td class="small text-muted">${device.open_ports_count || 0} Ports open</td>
             <td><span class="badge-cyber ${riskClass}">${riskLevel}</span></td>

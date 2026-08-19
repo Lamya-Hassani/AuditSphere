@@ -279,6 +279,8 @@ def execute_audit(target, mode="full", user=None):
         audit.comparison_data = data["comparison"]
         audit.save(update_fields=["comparison_data"])
 
+    scanned_ips = set()
+
     for device_json in devices:
         device_data = _get_device_data(
             device_json,
@@ -290,6 +292,8 @@ def execute_audit(target, mode="full", user=None):
         if not ip:
             continue
 
+        scanned_ips.add(ip)
+
         device, created = Device.objects.get_or_create(
             ip=ip,
             defaults={
@@ -297,7 +301,7 @@ def execute_audit(target, mode="full", user=None):
                 "mac": device_data.get("mac"),
                 "vendor": device_data.get("vendor"),
                 "operating_system": device_data.get("os"),
-                "status": device_data.get("status", "unknown"),
+                "status": device_data.get("status", "up"),
             },
         )
 
@@ -324,4 +328,29 @@ def execute_audit(target, mode="full", user=None):
             device_data.get("findings", []),
         )
 
+    # Mark inventory devices in the target scan scope as 'down' if not detected
+    _update_unresponsive_devices(target, scanned_ips)
+
     return audit
+
+
+def _update_unresponsive_devices(target, scanned_ips):
+    """
+    If a device in inventory belongs to the scanned target subnet or IP scope
+    but was NOT detected active in the latest scan, update its status to 'down'.
+    """
+    import ipaddress
+    try:
+        target_net = ipaddress.ip_network(target, strict=False)
+        for dev in Device.objects.all():
+            try:
+                dev_ip = ipaddress.ip_address(dev.ip)
+                if dev_ip in target_net and dev.ip not in scanned_ips:
+                    if dev.status != "down":
+                        dev.status = "down"
+                        dev.save(update_fields=["status"])
+            except ValueError:
+                continue
+    except ValueError:
+        # If target is a single host or string that isn't a subnet
+        Device.objects.filter(ip=target).exclude(ip__in=scanned_ips).update(status="down")

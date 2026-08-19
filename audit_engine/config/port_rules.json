@@ -103,11 +103,43 @@
         "recommendation": "Restrict PostgreSQL access to trusted hosts and networks."
     },
 
+    "135": {
+        "service": "msrpc",
+        "severity": "Medium",
+        "points": 3,
+        "description": "Microsoft Windows RPC service exposed.",
+        "recommendation": "Restrict RPC port 135 access using host firewalls or network segmentation."
+    },
+
+    "139": {
+        "service": "netbios-ssn",
+        "severity": "Medium",
+        "points": 3,
+        "description": "NetBIOS Session Service exposed.",
+        "recommendation": "Disable NetBIOS over TCP/IP if not required and block port 139."
+    },
+
     "5900": {
         "service": "vnc",
         "severity": "High",
         "points": 4,
         "description": "VNC remote desktop service exposed.",
         "recommendation": "Restrict VNC access and use encrypted tunnels or VPN."
+    },
+
+    "8000": {
+        "service": "http-alt",
+        "severity": "Medium",
+        "points": 3,
+        "description": "HTTP web application service exposed on port 8000.",
+        "recommendation": "Enforce HTTPS encryption and restrict administrative web interface access."
+    },
+
+    "8080": {
+        "service": "http-proxy",
+        "severity": "Medium",
+        "points": 3,
+        "description": "HTTP web proxy/service exposed on port 8080.",
+        "recommendation": "Enforce authentication, HTTPS transport encryption, and access controls."
     }
 }

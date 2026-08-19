@@ -11,7 +11,12 @@ def check_ports(device):
         rule = rules.get(str(port.number))
 
         if not rule:
-            continue
+            rule = {
+                "severity": "Low",
+                "points": 1,
+                "description": f"Exposed service '{port.service}' detected on port {port.number}.",
+                "recommendation": f"Verify whether service '{port.service}' on port {port.number} needs to be network-accessible.",
+            }
 
         findings.append(
             Finding(

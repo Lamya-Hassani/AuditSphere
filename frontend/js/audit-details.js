@@ -184,6 +184,19 @@ function renderComparison(cmp) {
   `;
 }
 
+function formatHostLabel(dev) {
+  const ip = dev.device_ip || dev.ip || '';
+  const h = dev.device_hostname || dev.hostname;
+  if (h && h !== 'Unknown' && h !== 'Unknown Hostname' && h !== '—' && h !== 'N/A' && h !== ip) {
+    return h;
+  }
+  const os = dev.device_os || dev.operating_system || dev.os;
+  if (os && os !== 'Generic OS' && os !== 'Unknown' && os !== 'N/A' && os !== '—') {
+    return os;
+  }
+  return ip || 'Host';
+}
+
 function renderDevices(devices, mode) {
   const container = document.getElementById('devices-container');
   const sectionTitle = document.getElementById('devices-section-title');
@@ -212,7 +225,7 @@ function renderDevices(devices, mode) {
             ${devices.map(d => `
               <tr>
                 <td><code>${d.device_ip || d.ip || '—'}</code></td>
-                <td>${d.device_hostname || d.hostname || '—'}</td>
+                <td class="fw-semibold">${formatHostLabel(d)}</td>
                 <td><code class="text-muted">${d.device_mac || d.mac || '—'}</code></td>
                 <td>${d.device_vendor || d.vendor || '—'}</td>
                 <td><span class="badge-cyber badge-safe">Up</span></td>
@@ -229,7 +242,7 @@ function renderDevices(devices, mode) {
     if (sectionTitle) sectionTitle.textContent = `Scanned Hosts & Open Ports (${devices.length})`;
     container.innerHTML = devices.map((auditDevice, index) => {
       const ip = auditDevice.device_ip || auditDevice.ip || 'Unknown';
-      const hostname = auditDevice.device_hostname || auditDevice.hostname || '—';
+      const label = formatHostLabel(auditDevice);
       const os = auditDevice.device_os || auditDevice.os || '—';
       const ports = auditDevice.ports || [];
 
@@ -252,13 +265,17 @@ function renderDevices(devices, mode) {
            </table>`
         : `<div class="text-muted small py-2"><i class="bi bi-info-circle me-1"></i>No open ports found on this host.</div>`;
 
+      const hostTitle = (label && label !== ip && label !== 'Host')
+        ? `<span class="fw-semibold text-dark">(${label})</span>`
+        : '';
+
       return `
         <div class="card mb-3 border-secondary-subtle">
           <div class="card-header bg-light d-flex justify-content-between align-items-center"
                style="cursor:pointer;" data-bs-toggle="collapse" data-bs-target="#device-collapse-${index}">
             <div>
               <span class="code-box me-2">${ip}</span>
-              <span class="fw-semibold text-dark">${hostname}</span>
+              ${hostTitle}
             </div>
             <div class="d-flex align-items-center gap-2">
               <span class="small text-muted">${ports.length} open port${ports.length !== 1 ? 's' : ''}</span>
@@ -289,6 +306,11 @@ function renderDevices(devices, mode) {
 
     const riskBadgeClass = getSeverityBadgeClass(auditDevice.risk_level);
     const findings = auditDevice.findings || [];
+    const devIp = dev.ip || 'Unknown IP';
+    const devLabel = formatHostLabel(dev);
+    const devTitle = (devLabel && devLabel !== devIp && devLabel !== 'Host')
+      ? `<span class="fw-semibold text-dark">(${devLabel})</span>`
+      : '';
 
     const findingsHtml = findings.length > 0
       ? findings.map(f => {
@@ -329,8 +351,8 @@ function renderDevices(devices, mode) {
         <div class="card-header bg-light d-flex justify-content-between align-items-center"
              style="cursor:pointer;" data-bs-toggle="collapse" data-bs-target="#device-collapse-${index}">
           <div>
-            <span class="code-box me-2">${dev.ip || 'Unknown IP'}</span>
-            <span class="fw-semibold text-dark">${dev.hostname || 'Host'}</span>
+            <span class="code-box me-2">${devIp}</span>
+            ${devTitle}
           </div>
           <div class="d-flex align-items-center gap-2">
             <span class="small text-muted me-2">Risk Score: ${auditDevice.risk_score ?? 0}</span>
@@ -341,7 +363,7 @@ function renderDevices(devices, mode) {
         <div id="device-collapse-${index}" class="collapse show">
           <div class="card-body p-3 bg-white">
             <div class="mb-3 small text-muted pb-2 border-bottom">
-              OS: ${dev.operating_system || '—'} | MAC: ${dev.mac || 'N/A'} | Vendor: ${dev.vendor || 'Unknown'}
+              OS: ${dev.operating_system || dev.os || 'Generic OS'} | Vendor: ${dev.vendor || 'Unknown'} | MAC: ${dev.mac || 'N/A'}
             </div>
             <h6 class="fw-bold text-muted small text-uppercase mb-2">
               Host Vulnerability & Threat Findings (${findings.length})
