@@ -1,4 +1,4 @@
-import { renderNavbar, formatDate, showToast, showConfirm, getSeverityBadgeClass } from './app.js?v=1.0.3';
+import { renderNavbar, formatDate, showToast, showConfirm, getSeverityBadgeClass, formatHostName } from './app.js?v=1.0.3';
 import { API } from './api.js?v=1.0.3';
 
 let currentAuditId = null;
@@ -35,9 +35,15 @@ async function loadAuditDetail(id) {
     const downloadPdfBtn = document.getElementById('download-pdf-btn');
     if (downloadPdfBtn) downloadPdfBtn.href = API.downloadAuditPdfUrl(audit.id);
 
+    const modeBadge = mode === 'full'
+      ? `<span class="badge bg-primary ms-2 px-2 py-1"><i class="bi bi-shield-check me-1"></i>Full Audit</span>`
+      : mode === 'ports'
+        ? `<span class="badge bg-warning text-dark ms-2 px-2 py-1"><i class="bi bi-search me-1"></i>Port Sweep</span>`
+        : `<span class="badge bg-info text-dark ms-2 px-2 py-1"><i class="bi bi-hdd-network me-1"></i>Host Discovery</span>`;
+
     document.getElementById('meta-target').textContent   = audit.target;
     document.getElementById('meta-date').textContent     = formatDate(audit.scan_date);
-    document.getElementById('meta-type').textContent     = scanType;
+    document.getElementById('meta-type').innerHTML        = `${scanType} ${modeBadge}`;
     document.getElementById('meta-scanner').textContent  = audit.scanner_version || 'Nmap Engine';
     document.getElementById('meta-rules').textContent    = `v${audit.rules_version || '1.0'}`;
     document.getElementById('meta-executor').textContent = audit.executed_by_username || 'System Engine';
@@ -130,17 +136,21 @@ function renderComparison(cmp) {
 
   card.classList.remove('d-none');
 
-  const isPositive = cmp.score_delta >= 0;
-  const deltaBadgeClass = isPositive ? 'bg-success-subtle text-success border-success-subtle' : 'bg-danger-subtle text-danger border-danger-subtle';
-  const deltaIcon = isPositive ? 'bi-arrow-up-right' : 'bi-arrow-down-right';
+  const isPositive = cmp.score_delta > 0;
+  const isNegative = cmp.score_delta < 0;
+  const deltaBadgeClass = isPositive ? 'bg-success-subtle text-success border-success-subtle' : isNegative ? 'bg-danger-subtle text-danger border-danger-subtle' : 'bg-secondary-subtle text-secondary border-secondary-subtle';
+  const deltaIcon = isPositive ? 'bi-arrow-up-right' : isNegative ? 'bi-arrow-down-right' : 'bi-dash-lg';
   const deltaText = isPositive ? `+${cmp.score_delta}` : `${cmp.score_delta}`;
+
+  const alertClass = isPositive ? 'alert-success' : isNegative ? 'alert-danger' : 'alert-info';
+  const alertIcon = isPositive ? 'bi-check-circle-fill text-success' : isNegative ? 'bi-exclamation-triangle-fill text-danger' : 'bi-info-circle-fill text-info';
 
   const newHostsText = cmp.new_hosts?.length > 0 ? cmp.new_hosts.join(', ') : 'None';
   const removedHostsText = cmp.removed_hosts?.length > 0 ? cmp.removed_hosts.join(', ') : 'None';
 
   container.innerHTML = `
-    <div class="alert alert-info py-2 px-3 mb-3 small d-flex align-items-center gap-2">
-      <i class="bi bi-info-circle-fill text-info fs-5"></i>
+    <div class="alert ${alertClass} py-2 px-3 mb-3 small d-flex align-items-center gap-2">
+      <i class="bi ${alertIcon} fs-5"></i>
       <span>${cmp.summary}</span>
     </div>
 
@@ -184,19 +194,6 @@ function renderComparison(cmp) {
   `;
 }
 
-function formatHostLabel(dev) {
-  const ip = dev.device_ip || dev.ip || '';
-  const h = dev.device_hostname || dev.hostname;
-  if (h && h !== 'Unknown' && h !== 'Unknown Hostname' && h !== '—' && h !== 'N/A' && h !== ip) {
-    return h;
-  }
-  const os = dev.device_os || dev.operating_system || dev.os;
-  if (os && os !== 'Generic OS' && os !== 'Unknown' && os !== 'N/A' && os !== '—') {
-    return os;
-  }
-  return ip || 'Host';
-}
-
 function renderDevices(devices, mode) {
   const container = document.getElementById('devices-container');
   const sectionTitle = document.getElementById('devices-section-title');
@@ -225,7 +222,7 @@ function renderDevices(devices, mode) {
             ${devices.map(d => `
               <tr>
                 <td><code>${d.device_ip || d.ip || '—'}</code></td>
-                <td class="fw-semibold">${formatHostLabel(d)}</td>
+                <td class="fw-semibold">${formatHostName(d)}</td>
                 <td><code class="text-muted">${d.device_mac || d.mac || '—'}</code></td>
                 <td>${d.device_vendor || d.vendor || '—'}</td>
                 <td><span class="badge-cyber badge-safe">Up</span></td>
@@ -242,7 +239,7 @@ function renderDevices(devices, mode) {
     if (sectionTitle) sectionTitle.textContent = `Scanned Hosts & Open Ports (${devices.length})`;
     container.innerHTML = devices.map((auditDevice, index) => {
       const ip = auditDevice.device_ip || auditDevice.ip || 'Unknown';
-      const label = formatHostLabel(auditDevice);
+      const label = formatHostName(auditDevice);
       const os = auditDevice.device_os || auditDevice.os || '—';
       const ports = auditDevice.ports || [];
 
@@ -307,7 +304,7 @@ function renderDevices(devices, mode) {
     const riskBadgeClass = getSeverityBadgeClass(auditDevice.risk_level);
     const findings = auditDevice.findings || [];
     const devIp = dev.ip || 'Unknown IP';
-    const devLabel = formatHostLabel(dev);
+    const devLabel = formatHostName(dev);
     const devTitle = (devLabel && devLabel !== devIp && devLabel !== 'Host')
       ? `<span class="fw-semibold text-dark">(${devLabel})</span>`
       : '';
@@ -321,6 +318,9 @@ function renderDevices(devices, mode) {
           const sourceTag = f.source === 'nse'
             ? `<span class="badge bg-info-subtle text-info border border-info-subtle me-2">NSE Script</span>`
             : '';
+          const versionTag = (f.product || f.version)
+            ? `<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle ms-1 me-2"><i class="bi bi-cpu me-1"></i>${f.product || ''} ${f.version || ''}</span>`
+            : '';
 
           return `
             <div class="p-3 mb-3 rounded border bg-light">
@@ -330,6 +330,7 @@ function renderDevices(devices, mode) {
                   ${cveTag}
                   ${sourceTag}
                   <span class="fw-bold text-dark me-1">${f.service}</span>
+                  ${versionTag}
                   <span class="text-muted small">(Port ${f.port})</span>
                 </div>
                 <span class="badge bg-secondary text-dark border-secondary">-${f.points} pts</span>

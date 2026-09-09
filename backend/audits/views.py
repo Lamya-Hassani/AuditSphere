@@ -305,26 +305,32 @@ class AuditPDFReportView(APIView):
 
         for audit_device in audit.devices.all():
             dev = audit_device.device
+            dev_mac = dev.mac or 'N/A'
             dev_header = f"Host: {dev.ip} ({dev.hostname or 'Unknown Hostname'})"
             story.append(Paragraph(dev_header, ParagraphStyle('DevHeader', parent=body_bold, fontSize=10, textColor=colors.HexColor('#0f172a'))))
-            story.append(Paragraph(f"OS: {dev.operating_system or 'Generic OS'} | Vendor: {dev.vendor or 'Unknown Vendor'} | Status: {dev.status} | Risk Level: {audit_device.risk_level}", body_style))
+            story.append(Paragraph(f"MAC: {dev_mac} | OS: {dev.operating_system or 'Generic OS'} | Vendor: {dev.vendor or 'Unknown Vendor'} | Risk Level: {audit_device.risk_level} (Score: {audit_device.risk_score} pts)", body_style))
             story.append(Spacer(1, 4))
 
             findings = audit_device.findings.all()
             if findings.exists():
                 findings_data = [
-                    ["Service/Port", "Severity", "Description", "Remediation"]
+                    ["Service / Port", "Severity", "Description & Vulnerability", "Remediation Directive"]
                 ]
                 for f in findings:
                     sev_text = f.severity.upper()
+                    cve_str = f"<br/><font color='#dc3545'><b>{f.cve_id}</b> (CVSS {f.cvss_score})</font>" if f.cve_id else ""
+                    product_ver = f"<br/><i>{f.product or ''} {f.version or ''}</i>".strip()
+                    version_info = f"<br/><font color='#475569'>{product_ver}</font>" if (f.product or f.version) else ""
+                    service_col = f"<b>{f.service}</b> (Port {f.port}){version_info}{cve_str}"
+
                     findings_data.append([
-                        Paragraph(f"{f.service}<br/>Port {f.port}", code_style),
-                        Paragraph(sev_text, ParagraphStyle('SevText', parent=body_bold, fontSize=8, textColor=colors.HexColor('#dc3545') if sev_text == 'CRITICAL' else colors.HexColor('#f97316') if sev_text == 'HIGH' else colors.HexColor('#d97706') if sev_text == 'MEDIUM' else colors.HexColor('#0284c7'))),
+                        Paragraph(service_col, code_style),
+                        Paragraph(f"{sev_text}<br/>(-{f.points} pts)", ParagraphStyle('SevText', parent=body_bold, fontSize=8, textColor=colors.HexColor('#dc3545') if sev_text == 'CRITICAL' else colors.HexColor('#f97316') if sev_text == 'HIGH' else colors.HexColor('#d97706') if sev_text == 'MEDIUM' else colors.HexColor('#0284c7'))),
                         Paragraph(f.description, body_style),
                         Paragraph(f.recommendation, body_style)
                     ])
 
-                findings_table = Table(findings_data, colWidths=[70, 60, 230, 180])
+                findings_table = Table(findings_data, colWidths=[100, 55, 205, 180])
                 findings_table.setStyle(TableStyle([
                     ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#f1f5f9')),
                     ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),

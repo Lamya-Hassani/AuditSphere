@@ -7,6 +7,9 @@ def calculate_risk_score(findings):
 
 def calculate_risk_level(score):
 
+    if score == 0:
+        return "Safe"
+
     if score <= 3:
         return "Low"
 

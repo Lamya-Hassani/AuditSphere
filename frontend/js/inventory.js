@@ -1,4 +1,4 @@
-import { renderNavbar, showToast, showConfirm, getSeverityBadgeClass, formatDate } from './app.js?v=1.0.3';
+import { renderNavbar, showToast, showConfirm, getSeverityBadgeClass, formatDate, formatHostName } from './app.js?v=1.0.3';
 import { API } from './api.js?v=1.0.3';
 
 let currentStatusFilter = '';
@@ -42,17 +42,6 @@ function setFilter(status, activeBtn) {
   activeBtn.classList.add('active');
   const search = document.getElementById('inventory-search').value.trim();
   loadInventory(search, currentStatusFilter);
-function formatHostName(dev) {
-  if (!dev) return 'Host';
-  const h = dev.hostname || dev.device_hostname;
-  if (h && h !== 'Unknown' && h !== 'Unknown Hostname' && h !== '—' && h !== 'N/A' && h !== (dev.ip || dev.device_ip)) {
-    return h;
-  }
-  const os = dev.operating_system || dev.os || dev.device_os;
-  if (os && os !== 'Generic OS' && os !== 'Unknown' && os !== 'N/A' && os !== '—') {
-    return os;
-  }
-  return dev.ip || dev.device_ip || 'Host';
 }
 
 async function loadInventory(search, status) {

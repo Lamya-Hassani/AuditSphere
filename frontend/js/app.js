@@ -86,13 +86,26 @@ export function formatDate(isoString) {
   });
 }
 
+export function formatHostName(dev) {
+  if (!dev) return 'Host';
+  const h = dev.hostname || dev.device_hostname;
+  if (h && h !== 'Unknown' && h !== 'Unknown Hostname' && h !== '—' && h !== 'N/A' && h !== (dev.ip || dev.device_ip)) {
+    return h;
+  }
+  const os = dev.operating_system || dev.os || dev.device_os;
+  if (os && os !== 'Generic OS' && os !== 'Unknown' && os !== 'N/A' && os !== '—') {
+    return os;
+  }
+  return dev.ip || dev.device_ip || 'Host';
+}
+
 export function getSeverityBadgeClass(severity) {
   switch ((severity || '').toLowerCase()) {
     case 'critical': return 'bg-critical';
     case 'high':     return 'bg-high';
     case 'medium':   return 'bg-medium';
     case 'low':      return 'bg-low';
-    default:         return 'bg-safe';
+    default:         return 'bg-low';
   }
 }
 

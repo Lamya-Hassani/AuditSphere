@@ -132,6 +132,20 @@ def _get_device_data(device_json, scan_mode):
         else device_json
     )
 
+    sec_score = device_json.get("security_score", 100)
+    risk_level = device_json.get("risk_level")
+    if not risk_level or risk_level == "N/A":
+        if sec_score == 100:
+            risk_level = "Safe"
+        elif sec_score >= 90:
+            risk_level = "Low"
+        elif sec_score >= 70:
+            risk_level = "Medium"
+        elif sec_score >= 50:
+            risk_level = "High"
+        else:
+            risk_level = "Critical"
+
     return {
         "ip": device.get("ip"),
         "hostname": device.get("hostname"),
@@ -145,8 +159,8 @@ def _get_device_data(device_json, scan_mode):
             else []
         ),
         "risk_score": device_json.get("risk_score", 0),
-        "security_score": device_json.get("security_score", 100),
-        "risk_level": device_json.get("risk_level", "N/A"),
+        "security_score": sec_score,
+        "risk_level": risk_level,
         "risk_categories": device_json.get("risk_categories", []),
         "score_breakdown": device_json.get("score_breakdown", {}),
         "findings": device_json.get("findings", []),

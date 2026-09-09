@@ -53,7 +53,14 @@ async function loadAudits() {
 }
 
 function getAuditRiskLevel(audit) {
-  if (!audit.devices || audit.devices.length === 0) return 'Safe';
+  if (!audit.devices || audit.devices.length === 0) {
+    const score = audit.laboratory_security_score ?? 100;
+    if (score < 50) return 'Critical';
+    if (score < 70) return 'High';
+    if (score < 90) return 'Medium';
+    if (score < 100) return 'Low';
+    return 'Safe';
+  }
   const levels = audit.devices.map(d => {
     return (d.risk_level || '').toLowerCase();
   });
@@ -61,16 +68,23 @@ function getAuditRiskLevel(audit) {
   if (levels.includes('high')) return 'High';
   if (levels.includes('medium')) return 'Medium';
   if (levels.includes('low')) return 'Low';
+  
+  // Fallback based on global security score if device risk_level is N/A or empty
+  const score = audit.laboratory_security_score ?? 100;
+  if (score < 50) return 'Critical';
+  if (score < 70) return 'High';
+  if (score < 90) return 'Medium';
+  if (score < 100) return 'Low';
   return 'Safe';
 }
 
 function getRiskBadgeClass(level) {
-  switch (level.toLowerCase()) {
+  switch ((level || '').toLowerCase()) {
     case 'critical': return 'bg-critical';
-    case 'high': return 'bg-high';
-    case 'medium': return 'bg-medium';
-    case 'low': return 'bg-low';
-    default: return 'bg-safe';
+    case 'high':     return 'bg-high';
+    case 'medium':   return 'bg-medium';
+    case 'low':      return 'bg-low';
+    default:         return 'bg-low';
   }
 }
 

@@ -98,9 +98,13 @@ def compare_audits(current: dict, previous: dict) -> dict:
     cur_risk  = _dominant_risk(cur_stats)
 
     # Overall summary sentence
-    if score_delta > 0 and total_resolved_findings >= total_new_findings:
-        summary = "The infrastructure security improved since the previous audit."
-    elif score_delta < 0 or total_new_findings > total_resolved_findings:
+    if score_delta > 0:
+        summary = "The infrastructure security posture has improved since the previous audit."
+    elif score_delta < 0:
+        summary = "The security posture has deteriorated since the previous audit."
+    elif total_resolved_findings > total_new_findings:
+        summary = "The infrastructure security posture has improved since the previous audit."
+    elif total_new_findings > total_resolved_findings:
         summary = "The security posture has deteriorated since the previous audit."
     else:
         summary = "The security posture is stable compared to the previous audit."

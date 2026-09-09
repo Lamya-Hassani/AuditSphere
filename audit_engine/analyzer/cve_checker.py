@@ -30,12 +30,18 @@ def check_cves(device):
 
     for port in device.ports:
 
-        if not port.product or not port.version:
+        if not port.product and not port.service:
             continue
 
-        product = port.product.lower().strip()
+        prod = (port.product or "").lower().strip()
+        serv = (port.service or "").lower().strip()
 
-        cves = database.get(product)
+        cves = database.get(prod) or database.get(serv)
+        if not cves:
+            for key, cve_list in database.items():
+                if (key in prod and prod) or (key in serv and serv):
+                    cves = cve_list
+                    break
 
         if not cves:
             continue
