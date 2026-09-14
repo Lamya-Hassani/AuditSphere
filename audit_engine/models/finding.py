@@ -11,10 +11,8 @@ class Finding:
     description: str = ""
     recommendation: str = ""
     points: int = 0
-    # Version / CVE enrichment fields
     fixed_version: str | None = None
     cve_id: str | None = None
     cvss: float | None = None
     cve_data: list = field(default_factory=list)
-    # NSE flag
     source: str = "rule"   # "rule" | "version" | "cve" | "nse"

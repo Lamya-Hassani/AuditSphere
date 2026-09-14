@@ -58,9 +58,10 @@ async function loadAuditDetail(id) {
 
         let scoreColor = '#2563eb';
         let statusLabel = 'Optimal';
-        if (score >= 80)     { scoreColor = '#10b981'; statusLabel = 'Strong Posture'; }
-        else if (score >= 60) { scoreColor = '#f59e0b'; statusLabel = 'Moderate Risk'; }
-        else if (score > 0)  { scoreColor = '#ef4444'; statusLabel = 'Critical Risk'; }
+        if (score >= 90)      { scoreColor = '#10b981'; statusLabel = 'Low Risk'; }
+        else if (score >= 70) { scoreColor = '#f59e0b'; statusLabel = 'Medium Risk'; }
+        else if (score >= 50) { scoreColor = '#f97316'; statusLabel = 'High Risk'; }
+        else if (score > 0)   { scoreColor = '#ef4444'; statusLabel = 'Critical Risk'; }
         else                  { statusLabel = 'No Data'; }
 
         const scoreCircle = document.getElementById('score-circle-element');

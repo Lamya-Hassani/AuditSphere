@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE nmaprun>
 <?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
-<!-- Nmap 7.99 scan initiated Tue Sep  8 23:32:17 2026 as: /usr/lib/nmap/nmap -sn -oX temp/discovery.xml 192.168.1.0/24 -->
-<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -sn -oX temp/discovery.xml 192.168.1.0/24" start="1788906737" startstr="Tue Sep  8 23:32:17 2026" version="7.99" xmloutputversion="1.05">
+<!-- Nmap 7.99 scan initiated Mon Sep 14 18:05:11 2026 as: /usr/lib/nmap/nmap -sn -oX temp/discovery.xml 10.0.4.15/24 -->
+<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -sn -oX temp/discovery.xml 10.0.4.15/24" start="1789405511" startstr="Mon Sep 14 18:05:11 2026" version="7.99" xmloutputversion="1.05">
 <verbose level="0"/>
 <debugging level="0"/>
 <host><status state="up" reason="arp-response" reason_ttl="0"/>
-<address addr="192.168.1.20" addrtype="ipv4"/>
-<address addr="08:00:27:90:51:CA" addrtype="mac" vendor="Oracle VirtualBox virtual NIC"/>
+<address addr="10.0.4.2" addrtype="ipv4"/>
+<address addr="52:54:00:12:35:00" addrtype="mac" vendor="QEMU virtual NIC"/>
 <hostnames>
-<hostname name="192.168.1.20" type="PTR"/>
+<hostname name="10.0.4.2" type="PTR"/>
 </hostnames>
-<times srtt="1689" rttvar="2017" to="100000"/>
+<times srtt="2517" rttvar="5000" to="100000"/>
 </host>
 <host><status state="up" reason="arp-response" reason_ttl="0"/>
-<address addr="192.168.1.30" addrtype="ipv4"/>
-<address addr="08:00:27:D5:A7:42" addrtype="mac" vendor="Oracle VirtualBox virtual NIC"/>
+<address addr="10.0.4.3" addrtype="ipv4"/>
+<address addr="52:54:00:12:35:00" addrtype="mac" vendor="QEMU virtual NIC"/>
 <hostnames>
-<hostname name="192.168.1.30" type="PTR"/>
+<hostname name="10.0.4.3" type="PTR"/>
 </hostnames>
-<times srtt="3405" rttvar="3844" to="100000"/>
+<times srtt="716" rttvar="1064" to="100000"/>
 </host>
 <host><status state="up" reason="localhost-response" reason_ttl="0"/>
-<address addr="192.168.1.10" addrtype="ipv4"/>
+<address addr="10.0.4.15" addrtype="ipv4"/>
 <hostnames>
-<hostname name="192.168.1.10" type="PTR"/>
+<hostname name="10.0.4.15" type="PTR"/>
 </hostnames>
 </host>
-<runstats><finished time="1788906742" timestr="Tue Sep  8 23:32:22 2026" summary="Nmap done at Tue Sep  8 23:32:22 2026; 256 IP addresses (3 hosts up) scanned in 5.27 seconds" elapsed="5.27" exit="success"/><hosts up="3" down="253" total="256"/>
+<runstats><finished time="1789405513" timestr="Mon Sep 14 18:05:13 2026" summary="Nmap done at Mon Sep 14 18:05:13 2026; 256 IP addresses (3 hosts up) scanned in 2.25 seconds" elapsed="2.25" exit="success"/><hosts up="3" down="253" total="256"/>
 </runstats>
 </nmaprun>

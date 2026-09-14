@@ -83,19 +83,16 @@ def compare_audits(current: dict, previous: dict) -> dict:
     total_new_findings      = sum(new_findings.values())
     total_resolved_findings = sum(resolved_findings.values())
 
-    # Current and previous global risk
-    cur_stats  = current.get("statistics",  {})
-    prev_stats = previous.get("statistics", {})
+    # Current and previous global risk — derived from score, not finding counts.
+    # Thresholds must match risk.py (backend) and audit-details.js (frontend).
+    def _risk_from_score(score: float) -> str:
+        if score >= 90: return "Low"
+        if score >= 70: return "Medium"
+        if score >= 50: return "High"
+        return "Critical"
 
-    def _dominant_risk(stats):
-        if stats.get("critical", 0) > 0: return "Critical"
-        if stats.get("high", 0) > 0:     return "High"
-        if stats.get("medium", 0) > 0:   return "Medium"
-        if stats.get("low", 0) > 0:      return "Low"
-        return "Safe"
-
-    prev_risk = _dominant_risk(prev_stats)
-    cur_risk  = _dominant_risk(cur_stats)
+    prev_risk = _risk_from_score(previous_score)
+    cur_risk  = _risk_from_score(current_score)
 
     # Overall summary sentence
     if score_delta > 0:

@@ -118,6 +118,7 @@ def _parse_scan_date(value):
         return datetime.now()
 
     try:
+        #fromisoformat does not handle the 'Z' suffix for UTC, so we replace it with '+00:00'
         return datetime.fromisoformat(value.replace("Z", "+00:00"))
     except (ValueError, TypeError):
         return datetime.now()

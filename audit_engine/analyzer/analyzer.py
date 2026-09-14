@@ -68,12 +68,12 @@ def analyzer(device):
         findings
     )
 
-    risk_level = calculate_risk_level(
-        risk_score
-    )
-
     security_score = calculate_security_score(
         findings
+    )
+
+    risk_level = calculate_risk_level(
+        security_score
     )
 
     categories, breakdown = calculate_categories(

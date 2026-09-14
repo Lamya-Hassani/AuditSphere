@@ -4,19 +4,18 @@ from pathlib import Path
 TEMP_FOLDER = Path("temp")
 HOST_XML = TEMP_FOLDER / "host.xml"
 
-# Safe, non-intrusive NSE discovery scripts
 NSE_SCRIPTS = ",".join([
-    "ftp-anon",
-    "http-title",
-    "http-server-header",
-    "http-methods",
-    "ssl-cert",
-    "ssl-enum-ciphers",
-    "smb-protocols",
-    "smb-security-mode",
-    "ssh2-enum-algos",
-    "ssh-hostkey",
-    "snmp-info",
+    "ftp-anon",           # Is anonymous FTP login allowed?
+    "http-title",         # Grab the HTTP page title
+    "http-server-header", # What server software?
+    "http-methods",       # Which HTTP verbs are allowed (PUT, DELETE...)?
+    "ssl-cert",           # SSL certificate details
+    "ssl-enum-ciphers",   # Which cipher suites are supported?
+    "smb-protocols",      # Is SMBv1 still enabled?
+    "smb-security-mode",  # Is SMB signing enforced?
+    "ssh2-enum-algos",    # Which SSH algorithms are offered?
+    "ssh-hostkey",        # SSH host key fingerprint
+    "snmp-info",          # SNMP information
 ])
 
 

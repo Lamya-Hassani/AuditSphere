@@ -53,29 +53,13 @@ async function loadAudits() {
 }
 
 function getAuditRiskLevel(audit) {
-  if (!audit.devices || audit.devices.length === 0) {
-    const score = audit.laboratory_security_score ?? 100;
-    if (score < 50) return 'Critical';
-    if (score < 70) return 'High';
-    if (score < 90) return 'Medium';
-    if (score < 100) return 'Low';
-    return 'Safe';
-  }
-  const levels = audit.devices.map(d => {
-    return (d.risk_level || '').toLowerCase();
-  });
-  if (levels.includes('critical')) return 'Critical';
-  if (levels.includes('high')) return 'High';
-  if (levels.includes('medium')) return 'Medium';
-  if (levels.includes('low')) return 'Low';
-  
-  // Fallback based on global security score if device risk_level is N/A or empty
+  // Always derive the overall risk from the aggregate security score.
+  // Thresholds must match risk.py (backend) and audit-details.js (frontend).
   const score = audit.laboratory_security_score ?? 100;
-  if (score < 50) return 'Critical';
-  if (score < 70) return 'High';
-  if (score < 90) return 'Medium';
-  if (score < 100) return 'Low';
-  return 'Safe';
+  if (score >= 90) return 'Low';
+  if (score >= 70) return 'Medium';
+  if (score >= 50) return 'High';
+  return 'Critical';
 }
 
 function getRiskBadgeClass(level) {
@@ -183,7 +167,7 @@ function renderTable() {
 
   tbody.innerHTML = paginatedItems.map(audit => {
     const score = audit.laboratory_security_score ?? 0;
-    const scoreBadgeClass = score >= 80 ? 'bg-safe' : score >= 60 ? 'bg-medium' : 'bg-critical';
+    const scoreBadgeClass = score >= 90 ? 'bg-safe' : score >= 70 ? 'bg-medium' : score >= 50 ? 'bg-high' : 'bg-critical';
     const risk = getAuditRiskLevel(audit);
     const riskBadgeClass = getRiskBadgeClass(risk);
     const deviceCount = audit.statistics?.devices ?? (audit.devices?.length ?? 0);

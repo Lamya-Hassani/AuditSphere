@@ -4,7 +4,6 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.shortcuts import get_object_or_404
 
 from .models import User
 from .serializers import (
@@ -12,7 +11,7 @@ from .serializers import (
     UserCreateUpdateSerializer,
     CustomTokenObtainPairSerializer,
 )
-from .permissions import CanManageUsers, IsAdminUserRole
+from .permissions import CanManageUsers
 
 
 class LoginView(TokenObtainPairView):
@@ -36,6 +35,7 @@ class LoginView(TokenObtainPairView):
             elif username in ["auditor", "auditor_dev", "user"]:
                 User.objects.create_user(username=username, password=password, role="auditor", email=f"{username}@audit.local")
 
+        # Proceed with the standard JWT token generation process from the parent class
         return super().post(request, *args, **kwargs)
 
 

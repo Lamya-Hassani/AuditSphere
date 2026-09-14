@@ -2,63 +2,56 @@
     "vsftpd": {
         "minimum_version": "3.0.5",
         "severity": "Low",
-        "points": 1,
+        "points": 3,
         "description": "VSFTPD version should be kept updated.",
         "recommendation": "Upgrade VSFTPD to the latest supported version."
     },
-
     "openssh": {
         "minimum_version": "9.8p1",
         "severity": "Medium",
-        "points": 2,
+        "points": 7,
         "description": "OpenSSH version is below the recommended baseline.",
         "recommendation": "Upgrade OpenSSH to a supported version."
     },
-
     "apache httpd": {
         "minimum_version": "2.4.60",
         "severity": "Medium",
-        "points": 2,
+        "points": 7,
         "description": "Apache HTTP Server is below the recommended baseline.",
         "recommendation": "Upgrade Apache HTTP Server to the latest supported version."
     },
-
     "nginx": {
         "minimum_version": "1.26.0",
         "severity": "Medium",
-        "points": 2,
+        "points": 7,
         "description": "Nginx version is below the recommended baseline.",
         "recommendation": "Upgrade Nginx to a supported version."
     },
-
     "mysql": {
         "minimum_version": "8.0",
         "severity": "High",
-        "points": 4,
+        "points": 15,
         "description": "MySQL version is below the recommended baseline.",
         "recommendation": "Upgrade MySQL to a supported version."
     },
-
     "postgresql": {
         "minimum_version": "16.0",
         "severity": "Medium",
-        "points": 3,
+        "points": 7,
         "description": "PostgreSQL version is below the recommended baseline.",
         "recommendation": "Upgrade PostgreSQL to a supported version."
     },
-
     "samba": {
         "minimum_version": "4.6.4",
         "severity": "Medium",
-        "points": 3,
+        "points": 7,
         "description": "Samba version is below the recommended baseline.",
         "recommendation": "Upgrade Samba to a supported version."
     },
-
     "proftpd": {
         "minimum_version": "1.3.5",
         "severity": "Medium",
-        "points": 3,
+        "points": 7,
         "description": "ProFTPD version is below the recommended baseline.",
         "recommendation": "Upgrade ProFTPD to a supported version."
     }

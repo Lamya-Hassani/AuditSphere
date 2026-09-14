@@ -2,11 +2,17 @@ from analyzer.rules_loader import load_port_rules
 from models.finding import Finding
 
 
+EXCLUDED_PORTS = {135, 139}
+
+
 def check_ports(device):
     rules = load_port_rules()
     findings = []
 
     for port in device.ports:
+
+        if port.number in EXCLUDED_PORTS:
+            continue
 
         rule = rules.get(str(port.number))
 
@@ -28,6 +34,8 @@ def check_ports(device):
                 description=rule["description"],
                 recommendation=rule["recommendation"],
                 points=rule["points"],
+                cve_id=rule.get("cve_id"),
+                cvss=rule.get("cvss"),
                 source="port",
             )
         )

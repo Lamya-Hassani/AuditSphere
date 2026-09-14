@@ -5,18 +5,18 @@ def calculate_risk_score(findings):
     )
 
 
-def calculate_risk_level(score):
+def calculate_risk_level(security_score):
 
-    if score == 0:
+    if security_score >= 100:
         return "Safe"
 
-    if score <= 3:
+    if security_score >= 90:
         return "Low"
 
-    if score <= 8:
+    if security_score >= 70:
         return "Medium"
 
-    if score <= 15:
+    if security_score >= 50:
         return "High"
 
     return "Critical"
@@ -26,6 +26,6 @@ def calculate_security_score(findings):
 
     risk_score = calculate_risk_score(findings)
 
-    score = 100 - (risk_score * 4)
+    score = 100 - risk_score
 
     return max(score, 0)

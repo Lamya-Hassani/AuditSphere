@@ -72,6 +72,7 @@ def discover_hosts_detailed(target):
     ]
 
     subprocess.run(command, check=True)
+    #check : if nmap fails, raise an exception and stop execution
 
     tree = ET.parse(DISCOVERY_XML)
     root = tree.getroot()

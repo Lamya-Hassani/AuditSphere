@@ -2,143 +2,116 @@
     "21": {
         "service": "ftp",
         "severity": "Medium",
-        "points": 2,
+        "points": 7,
         "description": "FTP service exposed.",
         "recommendation": "Restrict FTP access and prefer SFTP or FTPS."
     },
-
     "22": {
         "service": "ssh",
         "severity": "Low",
-        "points": 1,
+        "points": 3,
         "description": "SSH remote administration service exposed.",
         "recommendation": "Use SSH keys, disable password authentication where possible, and restrict administrative access."
     },
-
     "23": {
         "service": "telnet",
         "severity": "High",
-        "points": 5,
+        "points": 15,
         "description": "Telnet service exposed.",
         "recommendation": "Disable Telnet and replace it with SSH."
     },
-
     "25": {
         "service": "smtp",
         "severity": "Medium",
-        "points": 3,
+        "points": 7,
         "description": "SMTP service exposed.",
         "recommendation": "Prevent open relay and enforce TLS."
     },
-
     "53": {
         "service": "domain",
         "severity": "Low",
-        "points": 2,
+        "points": 3,
         "description": "DNS service exposed.",
         "recommendation": "Restrict recursion and zone transfers."
     },
-
     "80": {
         "service": "http",
         "severity": "Medium",
-        "points": 3,
+        "points": 7,
         "description": "HTTP service exposed without transport encryption.",
         "recommendation": "Redirect HTTP traffic to HTTPS."
     },
-
     "110": {
         "service": "pop3",
         "severity": "Medium",
-        "points": 3,
+        "points": 7,
         "description": "POP3 service exposed.",
         "recommendation": "Use POP3S or another encrypted mail protocol."
     },
-
     "143": {
         "service": "imap",
         "severity": "Medium",
-        "points": 3,
+        "points": 7,
         "description": "IMAP service exposed.",
         "recommendation": "Use IMAPS and restrict access."
     },
-
     "443": {
         "service": "https",
         "severity": "Low",
-        "points": 1,
+        "points": 3,
         "description": "HTTPS service exposed.",
         "recommendation": "Maintain a valid TLS configuration and keep certificates and cryptographic libraries updated."
     },
-
     "445": {
         "service": "microsoft-ds",
         "severity": "High",
-        "points": 5,
-        "description": "SMB service exposed.",
-        "recommendation": "Disable SMBv1 and restrict SMB access."
+        "points": 15,
+        "description": "SMBv1 protocol active (Potential exposure to SMBExec / EternalBlue).",
+        "recommendation": "Disable SMBv1 and apply security patch MS17-010.",
+        "cve_id": "CVE-2017-0144",
+        "cvss": 8.1
     },
-
     "3389": {
         "service": "ms-wbt-server",
         "severity": "Medium",
-        "points": 4,
-        "description": "Remote Desktop service exposed.",
-        "recommendation": "Restrict RDP using firewall rules, VPN and MFA."
+        "points": 7,
+        "description": "Remote Desktop service exposed without NLA authentication (Risk of exposure to RDP vulnerabilities).",
+        "recommendation": "Enable Network Level Authentication (NLA) and restrict RDP access via VPN.",
+        "cve_id": "CVE-2019-0708",
+        "cvss": 6.8
     },
-
     "3306": {
         "service": "mysql",
         "severity": "High",
-        "points": 4,
+        "points": 15,
         "description": "MySQL database service exposed.",
         "recommendation": "Restrict database access to trusted hosts and networks."
     },
-
     "5432": {
         "service": "postgresql",
         "severity": "High",
-        "points": 4,
+        "points": 15,
         "description": "PostgreSQL database service exposed.",
         "recommendation": "Restrict PostgreSQL access to trusted hosts and networks."
     },
-
-    "135": {
-        "service": "msrpc",
-        "severity": "Medium",
-        "points": 3,
-        "description": "Microsoft Windows RPC service exposed.",
-        "recommendation": "Restrict RPC port 135 access using host firewalls or network segmentation."
-    },
-
-    "139": {
-        "service": "netbios-ssn",
-        "severity": "Medium",
-        "points": 3,
-        "description": "NetBIOS Session Service exposed.",
-        "recommendation": "Disable NetBIOS over TCP/IP if not required and block port 139."
-    },
-
     "5900": {
         "service": "vnc",
         "severity": "High",
-        "points": 4,
+        "points": 15,
         "description": "VNC remote desktop service exposed.",
         "recommendation": "Restrict VNC access and use encrypted tunnels or VPN."
     },
-
     "8000": {
         "service": "http-alt",
         "severity": "Medium",
-        "points": 3,
+        "points": 7,
         "description": "HTTP web application service exposed on port 8000.",
         "recommendation": "Enforce HTTPS encryption and restrict administrative web interface access."
     },
-
     "8080": {
         "service": "http-proxy",
         "severity": "Medium",
-        "points": 3,
+        "points": 7,
         "description": "HTTP web proxy/service exposed on port 8080.",
         "recommendation": "Enforce authentication, HTTPS transport encryption, and access controls."
     }

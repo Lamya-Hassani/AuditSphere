@@ -4,24 +4,24 @@ from models.finding import Finding
 
 
 CVSS_POINTS = {
-    "Low": 1,
-    "Medium": 3,
-    "High": 5,
-    "Critical": 8,
+    "Low": 3,
+    "Medium": 7,
+    "High": 15,
+    "Critical": 25,
 }
 
 
 def cvss_to_points(cvss):
     if cvss < 4:
-        return 1
-
-    if cvss < 7:
         return 3
 
-    if cvss < 9:
-        return 5
+    if cvss < 7:
+        return 7
 
-    return 8
+    if cvss < 9:
+        return 15
+
+    return 25
 
 
 def check_cves(device):

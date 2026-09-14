@@ -8,6 +8,7 @@ def parse_version_parts(version):
     if not version:
         return []
 
+    #"\d" matches any digit character (0-9), and the "+" quantifier means "one or more occurrences".
     numbers = re.findall(r"\d+", str(version))
 
     return [int(number) for number in numbers]

@@ -13,7 +13,7 @@ def check_ftp_anonymous(port, output):
         severity="High",
         description="Anonymous FTP access is enabled.",
         recommendation="Disable anonymous FTP access and use SFTP or FTPS.",
-        points=5,
+        points=15,
         source="nse",
     )
 
@@ -32,7 +32,7 @@ def check_smb_protocols(port, output):
         severity="High",
         description="SMBv1 is enabled.",
         recommendation="Disable SMBv1 and use SMBv2 or SMBv3.",
-        points=5,
+        points=15,
         source="nse",
     )
 
@@ -51,7 +51,7 @@ def check_smb_security(port, output):
         severity="Medium",
         description="SMB message signing is not enforced.",
         recommendation="Enable SMB message signing.",
-        points=3,
+        points=7,
         source="nse",
     )
 
@@ -89,7 +89,7 @@ def check_http_methods(port, output):
             "Disable unnecessary HTTP methods and allow "
             "only required methods."
         ),
-        points=3,
+        points=7,
         source="nse",
     )
 

@@ -32,7 +32,7 @@
         },
         {
             "id": "CVE-2024-6387",
-            "severity": "Critical",
+            "severity": "High",
             "cvss": 8.1,
             "affected_below": "9.8p1",
             "fixed_version": "9.8p1",
@@ -119,7 +119,7 @@
     "mysql": [
         {
             "id": "CVE-2012-2122",
-            "severity": "Critical",
+            "severity": "Medium",
             "cvss": 5.1,
             "affected_below": "5.6.6",
             "fixed_version": "5.6.6",
